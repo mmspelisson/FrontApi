@@ -1,0 +1,17 @@
+.wrapper {
+    background-color: #e2E2E2;
+    max-width: 70rem;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  
+    display: flex;
+    grid-template-columns: 256px 1fr;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+  
+  .content {
+    flex: 1;
+    padding: 20px;
+  }
+  
