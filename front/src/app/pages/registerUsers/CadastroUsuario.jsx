@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Container, FormWrapper, FormContainer, Label, Input, Select, LargeInput, ButtonContainer, SubmitButton, ClearButton, SubHeaderWrapper, HeaderSpacer } from './Styles'
 import Modal from '../../shared/components/modal/Modal'
+import axios from 'axios'
 
 function CadastroUsuario() {
     const [login, setLogin] = useState('');
@@ -16,21 +17,9 @@ function CadastroUsuario() {
         e.preventDefault();
         const userData = { login, senha, nome, setor, liberacoes, contato, cidadeUF };
 
-        fetch('/api/users', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(userData),
-        })
+        axios.post('http://localhost:8800', userData)
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erro ao cadastrar usuário');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Usuário cadastrado com sucesso:', data);
+                console.log('Usuário cadastrado com sucesso:', response.data);
                 // Limpar campos do formulário após o cadastro
                 setLogin('');
                 setSenha('');

@@ -9,10 +9,16 @@ import Sector from "./app/pages/sector/Index.jsx"
 import KanbanBoard from "./app/pages/kanbanboard/Kanban.jsx"
 import Header from "./app/shared/components/header/Index.jsx"
 import TrelloCard from "./app/shared/components/card/Card.jsx"
+import {toast, ToastContainer } from "react-toastify"
+import "react-toastify/ReactToastify.css"
+import Grid from "./app/shared/components/grid/Grid.jsx"
+
 
 export function App() {
     return (
         <>
+
+            {/* <ToastContainer autoClose = {3000} position={toast.POSITION.BOTTOM_LEFT} /> */}
             <BrowserRouter basename="/">
                 <Sidebar />
                 <Routes>

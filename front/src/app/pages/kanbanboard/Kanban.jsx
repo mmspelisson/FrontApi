@@ -1,9 +1,11 @@
 import Header from '../../shared/components/header/Index';
 import Sidebar from '../../shared/components/sidebar/Index';
-import TrelloCard from '../../shared/components/card/Card'; 
+import TrelloCard from '../../shared/components/card/Card';
 import './Styles.css';
 import CardModal from '../../shared/components/modal/Modal';
 import React, { useState } from 'react';
+
+
 
 const UserFilter = ({ userType }) => {
     return (
@@ -16,13 +18,13 @@ const UserFilter = ({ userType }) => {
 const KanbanBoard = () => {
     const [selectedCard, setSelectedCard] = useState(null);
 
-const handleCardClick = (card) => {
-    setSelectedCard(card);
-}
+    const handleCardClick = (card) => {
+        setSelectedCard(card);
+    }
 
-const handleCloseModal = () => {
-    setSelectedCard(null);
-}
+    const handleCloseModal = () => {
+        setSelectedCard(null);
+    }
 
 
 
@@ -35,7 +37,7 @@ const handleCloseModal = () => {
                 <UserFilter userType="Administrador" />
                 <Sidebar />
                 <div className="kanban-board">
-                    
+
                     <div className="column">
                         <h2>Solicitados</h2>
                         <div className="sub-column">

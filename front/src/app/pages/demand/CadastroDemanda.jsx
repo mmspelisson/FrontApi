@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
+import axios from 'axios';
 import { Container, FormWrapper, FormContainer, Label, Input, Select, LargeInput, ButtonContainer, SubmitButton, ClearButton, SubHeaderWrapper, HeaderSpacer } from './Styles'
 
 function CadastroDemanda() {
     const [demanda, setDemanda] = useState('1085');
-    const [solicitante, setSolicitante] = useState('Solicitante Exemplo');
+    const [solicitante, setSolicitante] = useState('Solicitante');
     const [tipo, setTipo] = useState('');
     const [descricao, setDescricao] = useState('');
     const [baixa, setBaixa] = useState(false);
@@ -45,8 +46,8 @@ function CadastroDemanda() {
                             <option value="">Hotfix</option>
                             <option value="">Suporte</option>
                             <option value="">Banco</option>
-                            <option value ="">Reconfiguração</option>
-                            <option value ="">Feature</option>
+                            <option value="">Reconfiguração</option>
+                            <option value="">Feature</option>
 
                         </Select>
                     </Label>
@@ -54,7 +55,7 @@ function CadastroDemanda() {
                         <LargeInput type="text" value={descricao} onChange={(e) => setDescricao(e.target.value)} placeholder="Descrição" required />
                     </Label>
                     <Label>
-                        
+
                         <div style={{ display: 'flex', gap: '16px' }}>
                             <input type="checkbox" checked={baixa} onChange={(e) => setBaixa(e.target.checked)} />
                             <label htmlFor="baixa">Baixa</label>
