@@ -11,7 +11,7 @@ export const Container = styled.div`
 export const FormWrapper = styled.div`
   width: 70%; 
   max-width: 1278px; 
-  height: 430px;
+  height: 340px;
   background-color: #E2E2E2;
   mix-blend-mode: pass-through;
   display: flex;
@@ -29,23 +29,24 @@ export const FormWrapper = styled.div`
 export const FormContainer = styled.form`
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  /* max-width: 800px; */
+  margin: 0 auto;
 `
 
 export const Label = styled.label`
-  width: 400px;
-  height: 56px;
-  margin: 10px;
+  flex: 0 0 calc(33.33% - 10px);
+  max-width: calc(33.33% - 10px);
+  margin: 10px 0;
   display: flex;
   align-items: center;
 `
 
 export const Input = styled.input`
-  width: 400px;
+  flex: 1;
   height: 56px;
   padding: 10px;
-  margin-left: 10px;
   background-color: #E2E2E2;
   border: 1px solid #AEAEAE;
   border-radius: 5px;
@@ -56,10 +57,9 @@ export const Input = styled.input`
 `
 
 export const Select = styled.select`
-  width: 400px;
+  flex: 1;
   height: 56px;
   padding: 10px;
-  margin-left: 10px;
   background-color: #E2E2E2;
   border: 1px solid #AEAEAE;
   border-radius: 5px;
@@ -70,10 +70,10 @@ export const Select = styled.select`
 `
 
 export const LargeInput = styled.input`
-  width: 608px;
+  flex: 0 0 calc(66.67% - 10px);
+  max-width: calc(66.67% - 10px);
   height: 56px;
   padding: 10px;
-  margin-left: 10px;
   background-color: #E2E2E2;
   border: 1px solid #AEAEAE;
   border-radius: 5px;
@@ -82,6 +82,7 @@ export const LargeInput = styled.input`
     color: #5A5A5A; 
   }
 `
+
 
 export const ButtonContainer = styled.div`
   position: absolute;

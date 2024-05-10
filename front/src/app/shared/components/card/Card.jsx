@@ -6,7 +6,7 @@ const TrelloCard = ({ title, description, onClick }) => {
     if (onClick) {
       onClick({ title, description });
     }
-  };
+  }
 
   return (
     <div style={cardStyles.card} onClick={handleClick}>
@@ -17,7 +17,10 @@ const TrelloCard = ({ title, description, onClick }) => {
         <p>{description}</p>
       </div>
     </div>
-  );
+  )
 }
 
 export default TrelloCard;
+
+
+//replicar pra outros cards

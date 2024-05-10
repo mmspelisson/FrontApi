@@ -16,8 +16,7 @@ function CadastroUsuario() {
     const handleSubmit = (e) => {
         e.preventDefault();
         const userData = { login, senha, nome, setor, liberacoes, contato, cidadeUF };
-
-        axios.post('http://localhost:8800', userData)
+        axios.post('http://localhost:8800/users', userData)
             .then(response => {
                 console.log('Usuário cadastrado com sucesso:', response.data);
                 // Limpar campos do formulário após o cadastro
@@ -31,9 +30,8 @@ function CadastroUsuario() {
             })
             .catch(error => {
                 console.error('Erro ao cadastrar usuário:', error);
-                // Lidar com o erro, exibir uma mensagem de erro ou fazer algo apropriado
             });
-    };
+    };    
 
     const handleLimpar = () => {
         setLogin('');
@@ -56,8 +54,8 @@ function CadastroUsuario() {
             <FormWrapper>
                 <FormContainer onSubmit={handleSubmit}>
                     <Label>
-                        ID:
-                        <Input type="text" value="1085" readOnly />
+                        
+                        <Input type="text" value="ID:1085" readOnly />
                     </Label>
                     <Label>
                         <Input type="text" value={login} onChange={(e) => setLogin(e.target.value)} placeholder="Login" required />
@@ -76,7 +74,7 @@ function CadastroUsuario() {
                     </Label>
                     <Label>
                         <Select value={liberacoes} onChange={(e) => setLiberacoes(e.target.value)} required>
-                            <option value="">Selecione as liberações</option>p
+                            <option value="">Selecione as liberações</option>
                         </Select>
                     </Label>
                     <HeaderSpacer height="16px" />

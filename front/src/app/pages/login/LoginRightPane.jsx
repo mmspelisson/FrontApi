@@ -1,129 +1,105 @@
-import React from 'react'
-import styled from 'styled-components'
-
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import LockIcon from '@mui/icons-material/Lock';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const RightPane = () => {
-    return <RightPaneContainer />
-}
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  return (
+    <RightPaneContainer>
+      <Title>Login</Title>
+      <LoginForm>
+        <UserInput type="text" placeholder="Nome de usuário" />
+        <PasswordInputWithShow
+          type={showPassword ? "text" : "password"}
+          placeholder="Senha"
+        />
+        <Button>ENTRAR</Button>
+      </LoginForm>
+    </RightPaneContainer>
+  );
+};
+
+const Title = styled.h1`
+  color: #151F6D;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  font-size: 22px;
+  text-align: center;
+  margin: auto;
+  margin-top: 180px;
+`;
 
 const RightPaneContainer = styled.div`
   width: 50%;
   height: 100vh;
-  background-color: #DACF61;
+  background-color: #E3DDA1;
   flex: 1;
-`
+`;
 
-export default RightPane
+const LoginForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+`;
 
+const Input = styled.input`
+  background-color: #E3DDA1;
+  width: 445px;
+  height: 40px;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #747474;
+  border-radius: 5px;
+`;
 
+const UserInput = styled(Input)`
+  background-image: url(${AccountCircleIcon});
+  background-position: 10px center;
+  padding-left: 40px;
+`;
 
-// import React, { useState } from 'react';
-// import styled from 'styled-components';
-// import { FaUser, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
+const PasswordInputWithShow = styled(Input)`
+  background-image: url(${LockIcon});
+  background-position: 10px center;
+  padding-left: 40px;
+  color: #151F6D;
+  position: relative;
 
-// const RightPane = () => {
-//     const [showPassword, setShowPassword] = useState(false);
-//     const [username, setUsername] = useState('');
-//     const [password, setPassword] = useState('');
+  &:after {
+    content: url(${VisibilityOffIcon});
+    position: absolute;
+    color: #151F6D;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+`;
 
-//     const handleTogglePasswordVisibility = () => {
-//         setShowPassword(prevState => !prevState);
-//     };
+const Button = styled.button`
+  width: 445px;
+  height: 40px;
+  background-color: #151F6D;
+  color: #E3DDA1;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 
-//     const handleUsernameChange = (event) => {
-//         setUsername(event.target.value);
-//     };
+  &:hover {
+    background-color: #1E2D94;
+  }
+`;
 
-//     const handlePasswordChange = (event) => {
-//         setPassword(event.target.value);
-//     };
-
-//     const handleLogin = () => {
-//         // Implement login functionality here
-//     };
-
-//     return (
-//         <RightPaneContainer>
-//             <LoginTitle>Login</LoginTitle>
-//             <FormContainer>
-//                 <InputContainer>
-//                     <IconWrapper>
-//                         <FaUser />
-//                     </IconWrapper>
-//                     <InputField
-//                         type="text"
-//                         placeholder="Username"
-//                         value={username}
-//                         onChange={handleUsernameChange}
-//                     />
-//                 </InputContainer>
-//                 <InputContainer>
-//                     <IconWrapper>
-//                         <FaLock />
-//                     </IconWrapper>
-//                     <InputField
-//                         type={showPassword ? 'text' : 'password'}
-//                         placeholder="Password"
-//                         value={password}
-//                         onChange={handlePasswordChange}
-//                     />
-//                     <IconWrapper onClick={handleTogglePasswordVisibility}>
-//                         {showPassword ? <FaEyeSlash /> : <FaEye />}
-//                     </IconWrapper>
-//                 </InputContainer>
-//                 <LoginButton onClick={handleLogin}>Login</LoginButton>
-//             </FormContainer>
-//         </RightPaneContainer>
-//     );
-// };
-
-// const RightPaneContainer = styled.div`
-//     width: 100%;
-//     height: 100vh;
-//     display: flex;
-//     flex-direction: column;
-//     align-items: center;
-//     justify-content: center;
-// `;
-
-// const LoginTitle = styled.h2`
-//     margin-bottom: 20px;
-// `;
-
-// const FormContainer = styled.div`
-//     width: 50%;
-//     max-width: 400px;
-// `;
-
-// const InputContainer = styled.div`
-//     display: flex;
-//     align-items: center;
-//     margin-bottom: 20px;
-// `;
-
-// const IconWrapper = styled.div`
-//     margin-right: 10px;
-// `;
-
-// const InputField = styled.input`
-//     padding: 10px;
-//     border: 1px solid #ccc;
-//     border-radius: 5px;
-//     outline: none;
-//     flex: 1;
-// `;
-
-// const LoginButton = styled.button`
-//     padding: 10px 20px;
-//     background-color: #4CAF50;
-//     color: white;
-//     border: none;
-//     border-radius: 5px;
-//     cursor: pointer;
-//     outline: none;
-//     &:hover {
-//         background-color: #45a049;
-//     }
-// `;
-
-// export default RightPane;
+export default RightPane;

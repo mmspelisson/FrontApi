@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { FormWrapper, FormContainer, Label, Input, ButtonContainer, SubmitButton, ClearButton, SubHeaderWrapper, HeaderSpacer } from './Styles'
 
+
 function CadastroSetor() {
     const [codigo, setCodigo] = useState('101');
     const [nome, setNome] = useState('');

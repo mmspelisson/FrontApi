@@ -4,5 +4,14 @@
   },
   "scripts": {
     "start": "concurrently \"cd front && yarn start\" \"cd api && yarn start\""
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/icons-material": "^5.15.17",
+    "@mui/material": "^5.15.17",
+    "antd": "^5.17.0",
+    "framer-motion": "^11.1.9"
   }
 }
