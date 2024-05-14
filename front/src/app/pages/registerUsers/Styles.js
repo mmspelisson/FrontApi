@@ -71,7 +71,7 @@ export const Select = styled.select`
 
 export const LargeInput = styled.input`
   flex: 0 0 calc(66.67% - 10px);
-  max-width: calc(66.67% - 10px);
+  max-width: calc(400% - 10px);
   height: 56px;
   padding: 10px;
   background-color: #E2E2E2;
@@ -129,4 +129,3 @@ export const SubHeaderWrapper = styled.div`
 export const HeaderSpacer = styled.div`
   margin-bottom: 23.5px;
 `
-
