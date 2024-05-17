@@ -1,6 +1,8 @@
 import React from 'react';
 import cardStyles from './Styles';
 
+
+
 const TrelloCard = ({ title, description, onClick }) => {
   const handleClick = () => {
     if (onClick) {
@@ -22,5 +24,3 @@ const TrelloCard = ({ title, description, onClick }) => {
 
 export default TrelloCard;
 
-
-//replicar pra outros cards
