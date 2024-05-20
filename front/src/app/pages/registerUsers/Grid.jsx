@@ -1,78 +1,29 @@
-import React from 'react';
-import { Table } from 'antd';
+import React, { useState } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
 
 const columns = [
-  {
-    title: 'Código',
-    dataIndex: 'codigo',
-    key: 'codigo',
-  },
-  {
-    title: 'Login',
-    dataIndex: 'login',
-    key: 'login',
-  },
-  {
-    title: 'Senha',
-    dataIndex: 'senha',
-    key: 'senha',
-  },
-  {
-    title: 'Nome Completo',
-    dataIndex: 'nomeCompleto',
-    key: 'nomeCompleto',
-  },
-  {
-    title: 'Setor',
-    dataIndex: 'setor',
-    key: 'setor',
-  },
-  {
-    title: 'Contato',
-    dataIndex: 'contato',
-    key: 'contato',
-  },
-  {
-    title: 'Cidade/UF',
-    dataIndex: 'cidadeUF',
-    key: 'cidadeUF',
-  },
-  {
-    title: 'Liberações',
-    dataIndex: 'liberacoes',
-    key: 'liberacoes',
-  },
+  { field: 'id', headerName: 'ID', width: 90 },
+  { field: 'login', headerName: 'Login', width: 150 },
+  { field: 'senha', headerName: 'Senha', width: 150 },
+  { field: 'nomeCompleto', headerName: 'Nome Completo', width: 200 },
+  { field: 'setor', headerName: 'Setor', width: 150 },
+  { field: 'liberacoes', headerName: 'Liberações', width: 150 },
+  { field: 'contato', headerName: 'Contato', width: 200 },
+  { field: 'cidade', headerName: 'Cidade', width: 150 },
 ];
 
-const data = [
-  {
-    key: '1',
-    codigo: '001',
-    login: 'usuario1',
-    senha: 'senha123',
-    nomeCompleto: 'Fulano de Tal',
-    setor: 'Recursos Humanos',
-    contato: '123456789',
-    cidadeUF: 'Cascavel/PR',
-    liberacoes: 'Admin',
-  },
-  {
-    key: '2',
-    codigo: '002',
-    login: 'usuario2',
-    senha: 'senha456',
-    nomeCompleto: 'Beltrano Silva',
-    setor: 'Financeiro',
-    contato: '987654321',
-    cidadeUF: 'Foz do Iguaçu/PR',
-    liberacoes: 'User',
-  },
+const rows = [
+  { id: 1, login: 'user1', senha: '123456', nomeCompleto: 'Usuário 1', setor: 'TI', liberacoes: 'Admin', contato: '123-456-7890', cidade: 'São Paulo' },
+  { id: 2, login: 'user2', senha: 'password', nomeCompleto: 'Usuário 2', setor: 'RH', liberacoes: 'User', contato: '987-654-3210', cidade: 'Rio de Janeiro' },
+  // Adicione mais dados conforme necessário
 ];
 
-const UserGrid = () => {
+const CrudSimples = () => {
   return (
-    <Table columns={columns} dataSource={data} />
+    <div style={{ height: 400, width: '100%' }}>
+      <DataGrid rows={rows} columns={columns} pageSize={5} rowsPerPageOptions={[5]} />
+    </div>
   );
 };
 
-export default UserGrid;
+export default CrudSimples;

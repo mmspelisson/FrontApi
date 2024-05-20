@@ -3,25 +3,74 @@ import styled from 'styled-components';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LockIcon from '@mui/icons-material/Lock';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import axios from 'axios';
 
 const RightPane = () => {
+  const [login, setLogin] = useState('');
+  const [senha, setSenha] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState('');
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await axios.post('/api/auth/login', {
+        login,
+        senha
+      });
+
+      setMessage(response.data.message);
+    } catch (error) {
+      if (error.response) {
+        setMessage(error.response.data.message);
+      } else {
+        setMessage('Erro ao conectar ao servidor');
+      }
+    }
+  };
+
   return (
     <RightPaneContainer>
       <Title>Login</Title>
-      <LoginForm>
-        <UserInput type="text" placeholder="Nome de usuário" />
-        <PasswordInputWithShow
-          type={showPassword ? "text" : "password"}
-          placeholder="Senha"
-        />
-        <Button>ENTRAR</Button>
+      <LoginForm onSubmit={handleSubmit}>
+        <InputWrapper>
+          <AccountCircleIcon style={{ position: 'absolute', marginLeft: '10px', marginTop: '12px' }} />
+          <UserInput
+            type="text"
+            placeholder="Nome de usuário"
+            value={login}
+            onChange={(e) => setLogin(e.target.value)}
+          />
+        </InputWrapper>
+        <InputWrapper>
+          <LockIcon style={{ position: 'absolute', marginLeft: '10px', marginTop: '12px' }} />
+          <PasswordInputWithShow
+            type={showPassword ? "text" : "password"}
+            placeholder="Senha"
+            value={senha}
+            onChange={(e) => setSenha(e.target.value)}
+          />
+          {showPassword ? (
+            <VisibilityIcon
+              style={{ position: 'absolute', right: '10px', top: '12px', cursor: 'pointer' }}
+              onClick={handleTogglePasswordVisibility}
+            />
+          ) : (
+            <VisibilityOffIcon
+              style={{ position: 'absolute', right: '10px', top: '12px', cursor: 'pointer' }}
+              onClick={handleTogglePasswordVisibility}
+            />
+          )}
+        </InputWrapper>
+        <Button type="submit">ENTRAR</Button>
       </LoginForm>
+      {message && <Message>{message}</Message>}
     </RightPaneContainer>
   );
 };
@@ -50,38 +99,28 @@ const LoginForm = styled.form`
   margin-top: 30px;
 `;
 
+const InputWrapper = styled.div`
+  position: relative;
+  width: 445px;
+  margin-bottom: 20px;
+`;
+
 const Input = styled.input`
   background-color: #E3DDA1;
-  width: 445px;
+  width: 100%;
   height: 40px;
-  margin-bottom: 20px;
   padding: 10px;
+  padding-left: 40px; /* Espaço para os ícones */
   border: 1px solid #747474;
   border-radius: 5px;
 `;
 
 const UserInput = styled(Input)`
-  background-image: url(${AccountCircleIcon});
-  background-position: 10px center;
-  padding-left: 40px;
+  padding-left: 40px; /* Espaço para o ícone do usuário */
 `;
 
 const PasswordInputWithShow = styled(Input)`
-  background-image: url(${LockIcon});
-  background-position: 10px center;
-  padding-left: 40px;
-  color: #151F6D;
-  position: relative;
-
-  &:after {
-    content: url(${VisibilityOffIcon});
-    position: absolute;
-    color: #151F6D;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-    cursor: pointer;
-  }
+  padding-left: 40px; /* Espaço para o ícone da senha */
 `;
 
 const Button = styled.button`
@@ -102,6 +141,12 @@ const Button = styled.button`
   }
 `;
 
+const Message = styled.p`
+  color: #151F6D;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  margin-top: 20px;
+  text-align: center;
+`;
+
 export default RightPane;
-
-

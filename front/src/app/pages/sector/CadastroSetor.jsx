@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { FormWrapper, FormContainer, Label, Input, ButtonContainer, SubmitButton, ClearButton, SubHeaderWrapper, HeaderSpacer } from './Styles'
-
+import CrudSimples2 from "../sector/Grid.jsx"
 
 function CadastroSetor() {
     const [codigo, setCodigo] = useState('101');
@@ -37,6 +37,9 @@ function CadastroSetor() {
                 </ButtonContainer>
             </FormWrapper>
             <HeaderSpacer height="50px" />
+            <div style={{marginTop: '30px'}}>
+                <CrudSimples2 />
+            </div>
         </>
     )
 }

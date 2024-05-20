@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Container, FormWrapper, FormContainer, Label, Input, Select, LargeInput, ButtonContainer, SubmitButton, ClearButton, SubHeaderWrapper, HeaderSpacer } from './Styles'
 import Modal from '../../shared/components/modal/Modal'
 import axios from 'axios'
+import CrudSimples from './Grid'
 
 function CadastroUsuario() {
     const [login, setLogin] = useState('');
@@ -49,6 +50,7 @@ function CadastroUsuario() {
 
     return (
         <>
+           
             <HeaderSpacer />
             <SubHeaderWrapper>Cadastro de Usuário</SubHeaderWrapper>
             <FormWrapper>
@@ -90,6 +92,9 @@ function CadastroUsuario() {
                     <ClearButton type="button" onClick={handleLimpar}>Limpar</ClearButton>
                 </ButtonContainer>
             </FormWrapper>
+            <div style={{marginTop: '30px'}}>
+                <CrudSimples />
+            </div>
             <HeaderSpacer height="50px" />
         </>
     )
