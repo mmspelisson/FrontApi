@@ -3,7 +3,8 @@ import Sidebar from '../../shared/components/sidebar/Index';
 import TrelloCard from '../../shared/components/card/Card';
 import './Styles.css';
 import CardModal from '../../shared/components/modal/Modal';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import Api from '../../shared/api';
 
 const UserFilter = ({ userType }) => {
     return (
@@ -24,12 +25,17 @@ const KanbanBoard = () => {
         setSelectedCard(null);
     }
 
-
+    useEffect(()=>{
+        Api.getCards()
+        .then((boardCards)=>{
+            console.log({boardCards})
+        })
+        .catch((error)=>console.error(error))
+    },[])
 
     return (
         <div>
             <Header />
-
             <div className="kanban-container">
                 <div className="SubHeaderWrapper">Controle de Demandas</div>
                 <UserFilter userType="Administrador" />
