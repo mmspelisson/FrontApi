@@ -1,9 +1,9 @@
+import React, { useState, useEffect } from 'react';
 import Header from '../../shared/components/header/Index';
 import Sidebar from '../../shared/components/sidebar/Index';
 import TrelloCard from '../../shared/components/card/Card';
 import './Styles.css';
-import CardModal from '../../shared/components/modal/Modal';
-import React, { useEffect, useState } from 'react';
+import CardModal from '../../shared/components/modal/modalKanban/CardModal';
 import Api from '../../shared/api';
 
 const UserFilter = ({ userType }) => {
@@ -16,22 +16,30 @@ const UserFilter = ({ userType }) => {
 
 const KanbanBoard = () => {
     const [selectedCard, setSelectedCard] = useState(null);
+    const [demandCards, setDemandCards] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    // useEffect(() => {
+    //     Api.getDemands()
+    //         .then((demands) => {
+    //             setDemandCards(demands);
+    //         })
+    //         .catch((error) => console.error(error));
+    // }, []);
 
     const handleCardClick = (card) => {
         setSelectedCard(card);
+        setIsModalOpen(true);
     }
 
     const handleCloseModal = () => {
         setSelectedCard(null);
+        setIsModalOpen(false);
     }
 
-    useEffect(()=>{
-        Api.getCards()
-        .then((boardCards)=>{
-            console.log({boardCards})
-        })
-        .catch((error)=>console.error(error))
-    },[])
+    const handleDemandAdded = (newDemand) => {
+        setDemandCards(prevCards => [...prevCards, newDemand]);
+    }
 
     return (
         <div>
@@ -41,7 +49,6 @@ const KanbanBoard = () => {
                 <UserFilter userType="Administrador" />
                 <Sidebar />
                 <div className="kanban-board">
-
                     <div className="column">
                         <h2>Solicitados</h2>
                         <div className="sub-column">
@@ -83,9 +90,8 @@ const KanbanBoard = () => {
                     </div>
                 </div>
             </div>
-            {selectedCard && <CardModal card={selectedCard} onClose={handleCloseModal} />}
+            <CardModal isOpen={isModalOpen} onRequestClose={handleCloseModal} demanda={selectedCard} />
         </div>
     )
 }
-
-export default KanbanBoard
+export default KanbanBoard;

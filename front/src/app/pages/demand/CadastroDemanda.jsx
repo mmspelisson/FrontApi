@@ -1,82 +1,142 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as yup from 'yup';
 import axios from 'axios';
-import { Container, FormWrapper, FormContainer, Label, Input, Select, LargeInput, ButtonContainer, SubmitButton, ClearButton, SubHeaderWrapper, HeaderSpacer } from './Styles'
+import {
+    HeaderSpacer,
+    SubHeaderWrapper,
+    FormWrapper,
+    FormContainer,
+    LabelContainer,
+    LabelText,
+    StyledInput,
+    StyledSelect,
+    ButtonContainer,
+    SubmitButton,
+    ClearButton,
+    ErrorMessageStyled,
+    StyledTextarea
+} from './Styles';
 
-function CadastroDemanda() {
-    const [demanda, setDemanda] = useState('1085');
-    const [solicitante, setSolicitante] = useState('Solicitante');
-    const [tipo, setTipo] = useState('');
-    const [descricao, setDescricao] = useState('');
-    const [baixa, setBaixa] = useState(false);
-    const [media, setMedia] = useState(false);
-    const [alta, setAlta] = useState(false);
-    const [critica, setCritica] = useState(false);
+function CadastroDemanda({ onDemandAdded }) {
+    const [id, setId] = useState('');
+    const [solicitante, setSolicitante] = useState('');
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('Dados da demanda cadastrada:', { demanda, solicitante, tipo, descricao, baixa, media, alta, critica })
-    }
+    useEffect(() => {
+        axios.get('http://localhost:3001/lastDemandId')
+            .then((response) => {
+                setId(response.data.nextId);
+            })
+            .catch((error) => {
+                console.error('Erro ao obter o próximo ID de demanda:', error);
+            });
 
-    const handleLimpar = () => {
-        setDemanda('');
-        setSolicitante('');
-        setTipo('');
-        setDescricao('');
-        setBaixa(false);
-        setMedia(false);
-        setAlta(false);
-        setCritica(false);
-    }
+        axios.get('http://localhost:3001/solicitante')
+            .then((response) => {
+                setSolicitante(response.data.solicitante);
+            })
+            .catch((error) => {
+                console.error('Erro ao obter o solicitante:', error);
+            });
+    }, []);
+
+    const handleSubmit = (data, { resetForm }) => {
+        console.log('Dados enviados para o backend:', data); 
+        axios.post('http://localhost:3001/demanda', data)
+            .then((response) => {
+                if (response.status === 200) {
+                    console.log('Demanda cadastrada com sucesso!');
+                    resetForm();
+                } else {
+                    console.error('Erro ao cadastrar demanda:', response.data);
+                }
+            })
+            .catch((error) => {
+                console.error('Erro ao cadastrar demanda:', error);
+            });
+    };
 
     return (
         <>
             <HeaderSpacer />
             <SubHeaderWrapper>Cadastro de Demanda</SubHeaderWrapper>
-            <FormWrapper>
-                <FormContainer onSubmit={handleSubmit}>
-                    <Label>
-                        <Input type="text" value={demanda} readOnly />
-                    </Label>
-                    <Label>
-                        <Input type="text" value={solicitante} readOnly />
-                    </Label>
-                    <Label>
-                        <Select value={tipo} onChange={(e) => setTipo(e.target.value)} required>
-                            <option value="">Selecione o tipo</option>
-                            <option value="">Hotfix</option>
-                            <option value="">Suporte</option>
-                            <option value="">Banco</option>
-                            <option value="">Reconfiguração</option>
-                            <option value="">Feature</option>
-
-                        </Select>
-                    </Label>
-                    <Label>
-                        <LargeInput type="text" value={descricao} onChange={(e) => setDescricao(e.target.value)} placeholder="Descrição" required />
-                    </Label>
-                    <Label>
-
-                        <div style={{ display: 'flex', gap: '16px' }}>
-                            <input type="checkbox" checked={baixa} onChange={(e) => setBaixa(e.target.checked)} />
-                            <label htmlFor="baixa">Baixa</label>
-                            <input type="checkbox" checked={media} onChange={(e) => setMedia(e.target.checked)} />
-                            <label htmlFor="media">Média</label>
-                            <input type="checkbox" checked={alta} onChange={(e) => setAlta(e.target.checked)} />
-                            <label htmlFor="alta">Alta</label>
-                            <input type="checkbox" checked={critica} onChange={(e) => setCritica(e.target.checked)} />
-                            <label htmlFor="critica">Crítica</label>
-                        </div>
-
-                    </Label>
-                </FormContainer>
-                <ButtonContainer>
-                    <SubmitButton type="submit">Confirmar</SubmitButton>
-                    <ClearButton type="button" onClick={handleLimpar}>Limpar</ClearButton>
-                </ButtonContainer>
-            </FormWrapper>
+            <Formik
+                initialValues={{
+                    solicitante: '',
+                    tipo: '',
+                    descricao: '',
+                    prioridade: ''
+                }}
+                onSubmit={handleSubmit}
+                validationSchema={yup.object().shape({
+                    tipo: yup.string().required('Tipo é obrigatório'),
+                    descricao: yup.string().required('Descrição é obrigatória'),
+                    prioridade: yup.string().required('Prioridade é obrigatória')
+                })}
+            >
+                {({ resetForm }) => (
+                    <Form>
+                        <FormWrapper>
+                            <FormContainer>
+                                <LabelContainer>
+                                    <LabelText>ID:</LabelText>
+                                    <StyledInput type="text" name="id" value={id} readOnly />
+                                </LabelContainer>
+                                <LabelContainer>
+                                    <LabelText>Solicitante:</LabelText>
+                                    <StyledInput type="text" name="solicitante" value={solicitante} readOnly />
+                                </LabelContainer>
+                                <LabelContainer>
+                                    <LabelText>Tipo:</LabelText>
+                                    <Field as={StyledSelect} name="tipo">
+                                        <option value="">Selecione o tipo</option>
+                                        <option value="Hotfix">Hotfix</option>
+                                        <option value="Suporte">Suporte</option>
+                                        <option value="Banco">Banco</option>
+                                        <option value="Reconfiguração">Reconfiguração</option>
+                                        <option value="Feature">Feature</option>
+                                    </Field>
+                                    <ErrorMessage name="tipo" component={ErrorMessageStyled} />
+                                </LabelContainer>
+                                <LabelContainer>
+                                    <LabelText>Descrição:</LabelText>
+                                    <Field as={StyledTextarea} name="descricao" placeholder="Descrição" />
+                                    <ErrorMessage name="descricao" component={ErrorMessageStyled} />
+                                </LabelContainer>
+                                <LabelContainer>
+                                    <LabelText>Prioridade:</LabelText>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <label>
+                                            Baixa
+                                            <Field type="radio" name="prioridade" value="Baixa" style={{ marginLeft: '5px' }} />
+                                        </label>
+                                        <label>
+                                            Média
+                                            <Field type="radio" name="prioridade" value="Média" style={{ marginLeft: '5px' }} />
+                                        </label>
+                                        <label>
+                                            Alta
+                                            <Field type="radio" name="prioridade" value="Alta" style={{ marginLeft: '5px' }} />
+                                        </label>
+                                        <label>
+                                            Crítica
+                                            <Field type="radio" name="prioridade" value="Crítica" style={{ marginLeft: '5px' }} />
+                                        </label>
+                                    </div>
+                                    <ErrorMessage name="prioridade" component={ErrorMessageStyled} />
+                                </LabelContainer>
+                            </FormContainer>
+                            <ButtonContainer>
+                                <SubmitButton type="submit">Confirmar</SubmitButton>
+                                <ClearButton type="button" onClick={resetForm}>Limpar</ClearButton>
+                            </ButtonContainer>
+                        </FormWrapper>
+                    </Form>
+                )}
+            </Formik>
             <HeaderSpacer height="50px" />
         </>
-    )
+    );
 }
+export default CadastroDemanda;
 
-export default CadastroDemanda
