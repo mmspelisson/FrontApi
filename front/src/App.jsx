@@ -1,38 +1,40 @@
-import React from "react"
-import { BrowserRouter, Route, Routes } from "react-router-dom"
-import Sidebar from "./app/shared/components/sidebar/Index.jsx"
-import Login from "./app/pages/login/Index.jsx"
-import Register from "./app/pages/registerUsers/Index.jsx"
-import Demand from "./app/pages/demand/Index.jsx"
-import MyGlobalStyles from "./app/styles/globalStyles.js"
-import Sector from "./app/pages/sector/Index.jsx"
-import KanbanBoard from "./app/pages/kanbanboard/Kanban.jsx"
-import Header from "./app/shared/components/header/Index.jsx"
-import TrelloCard from "./app/shared/components/card/Card.jsx"
-import { toast, ToastContainer } from "react-toastify"
-import "react-toastify/ReactToastify.css"
-import Grid from "./app/shared/components/grid/Grid.jsx"
-
+import React from "react";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import Sidebar from "./app/shared/components/sidebar/Index.jsx";
+import Login from "./app/pages/login/Index.jsx";
+import Register from "./app/pages/registerUsers/Index.jsx";
+import Demand from "./app/pages/demand/Index.jsx";
+import MyGlobalStyles from "./app/styles/globalStyles.js";
+import Sector from "./app/pages/sector/Index.jsx";
+import KanbanBoard from "./app/pages/kanbanboard/Kanban.jsx";
+import Header from "./app/shared/components/header/Index.jsx";
+import PrivateRoute from "./app/shared/components/privateRoute/privateRoute.jsx";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export function App() {
-    return (
-        <>
-            {/* <Grid setOnEdit={setOnEdit} users={users} setUsers={setUsers} /> */}
-            <BrowserRouter basename="/">
-                <Sidebar />
-                <Routes>
-                    <Route path='/' element={<KanbanBoard />} /> {/* Controle de demandas */}
-                    <Route path='/kanban' element={<KanbanBoard />} /> {/* Kanban Board */}
-                    <Route path='/login' element={<Login />} /> {/* Login de usuarios */}
-                    <Route path='/register' element={<Register />} /> {/* Registro de usuários */}
-                    <Route path='/demand' element={<Demand />} /> {/* Cadastro de demandas */}
-                    <Route path='/sector' element={<Sector />} /> {/* Cadastro de setor */}
-                    <Route path='*' element={<h1>Not found</h1>} /> {/* Não funciona */}
-                </Routes>
-            </BrowserRouter>
-            <MyGlobalStyles />
-        </>
-    )
+  return (
+    <>
+      <BrowserRouter basename="/">
+        <MyGlobalStyles />
+        <ToastContainer />
+        <div style={{ display: "flex" }}>
+          <Sidebar />
+          <div style={{ flex: 1 }}>
+            <Routes>
+              <Route path="/dashboard" element={<PrivateRoute permissions={['/kanban', '/demand', '/sector', '/register']}><KanbanBoard /></PrivateRoute>} />
+              <Route path="/kanban" element={<PrivateRoute permissions={['/kanban', '/demand']}><KanbanBoard /></PrivateRoute>} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<PrivateRoute permissions={['/register']}><Register /></PrivateRoute>} />
+              <Route path="/demand" element={<PrivateRoute permissions={['/kanban', '/demand']}><Demand /></PrivateRoute>} />
+              <Route path="/sector" element={<PrivateRoute permissions={['/sector']}><Sector /></PrivateRoute>} />
+              <Route path="*" element={<Navigate to="/login" />} />
+            </Routes>
+          </div>
+        </div>
+      </BrowserRouter>
+    </>
+  );
 }
 
-export default App
+export default App;

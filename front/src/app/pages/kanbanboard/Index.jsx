@@ -12,6 +12,5 @@ function KanbanBoard() {
         </div>
     )
 }
-
 export default KanbanBoard
 

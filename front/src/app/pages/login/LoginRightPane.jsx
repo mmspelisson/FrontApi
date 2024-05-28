@@ -1,79 +1,93 @@
 import React, { useState } from 'react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as yup from 'yup';
+import Axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LockIcon from '@mui/icons-material/Lock';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import axios from 'axios';
 
-const RightPane = () => {
-  const [login, setLogin] = useState('');
-  const [senha, setSenha] = useState('');
+const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleLogin = (values) => {
+    console.log("Tentando logar com valores:", values);
 
-    try {
-      const response = await axios.post('/api/auth/login', {
-        login,
-        senha
-      });
-
-      setMessage(response.data.message);
-    } catch (error) {
-      if (error.response) {
-        setMessage(error.response.data.message);
-      } else {
-        setMessage('Erro ao conectar ao servidor');
+    Axios.post("http://localhost:3001/login", {
+      email: values.email,
+      senha: values.senha,
+    }).then((response) => {
+      console.log("Resposta da API:", response.data);
+      setMessage(response.data.msg);
+      if (response.data.msg === "Usuário logado") {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        navigate('/kanban');  
       }
-    }
+    }).catch(error => {
+      console.error("Erro ao fazer login:", error);
+      setMessage(error.response?.data?.msg || "Erro ao fazer login");
+    });
   };
+
+  const validations = yup.object().shape({
+    email: yup.string().email("Email inválido").required("O email é obrigatório"),
+    senha: yup.string().required("A senha é obrigatória"),
+  });
 
   return (
     <RightPaneContainer>
       <Title>Login</Title>
-      <LoginForm onSubmit={handleSubmit}>
-        <InputWrapper>
-          <AccountCircleIcon style={{ position: 'absolute', marginLeft: '10px', marginTop: '12px' }} />
-          <UserInput
-            type="text"
-            placeholder="Nome de usuário"
-            value={login}
-            onChange={(e) => setLogin(e.target.value)}
-          />
-        </InputWrapper>
-        <InputWrapper>
-          <LockIcon style={{ position: 'absolute', marginLeft: '10px', marginTop: '12px' }} />
-          <PasswordInputWithShow
-            type={showPassword ? "text" : "password"}
-            placeholder="Senha"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
-          />
-          {showPassword ? (
-            <VisibilityIcon
-              style={{ position: 'absolute', right: '10px', top: '12px', cursor: 'pointer' }}
-              onClick={handleTogglePasswordVisibility}
-            />
-          ) : (
-            <VisibilityOffIcon
-              style={{ position: 'absolute', right: '10px', top: '12px', cursor: 'pointer' }}
-              onClick={handleTogglePasswordVisibility}
-            />
-          )}
-        </InputWrapper>
-        <Button type="submit">ENTRAR</Button>
-      </LoginForm>
+      <Formik
+        initialValues={{ email: '', senha: '' }}
+        onSubmit={handleLogin}
+        validationSchema={validations}
+      >
+        <Form>
+          <LoginForm>
+            <InputWrapper>
+              <AccountCircleIcon style={{ position: 'absolute', marginLeft: '10px', marginTop: '12px' }} />
+              <Field type="text" name="email" className="form-field" placeholder="Email" as={Input} />
+              <ErrorMessage component="span" name="email" className="form-error" />
+            </InputWrapper>
+            <InputWrapper>
+              <LockIcon style={{ position: 'absolute', marginLeft: '10px', marginTop: '12px' }} />
+              <Field type={showPassword ? "text" : "password"} name="senha" className="form-field" placeholder="Senha" as={Input} />
+              {showPassword ? (
+                <VisibilityIcon
+                  style={{ position: 'absolute', right: '10px', top: '12px', cursor: 'pointer' }}
+                  onClick={handleTogglePasswordVisibility}
+                />
+              ) : (
+                <VisibilityOffIcon
+                  style={{ position: 'absolute', right: '10px', top: '12px', cursor: 'pointer' }}
+                  onClick={handleTogglePasswordVisibility}
+                />
+              )}
+              <ErrorMessage component="span" name="senha" className="form-error" />
+            </InputWrapper>
+            <Button type="submit">Entrar</Button>
+          </LoginForm>
+        </Form>
+      </Formik>
       {message && <Message>{message}</Message>}
     </RightPaneContainer>
   );
 };
+
+const RightPaneContainer = styled.div`
+  width: 50%;
+  height: 100vh;
+  background-color: #E3DDA1;
+  flex: 1;
+`;
 
 const Title = styled.h1`
   color: #151F6D;
@@ -85,14 +99,7 @@ const Title = styled.h1`
   margin-top: 180px;
 `;
 
-const RightPaneContainer = styled.div`
-  width: 50%;
-  height: 100vh;
-  background-color: #E3DDA1;
-  flex: 1;
-`;
-
-const LoginForm = styled.form`
+const LoginForm = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -105,22 +112,14 @@ const InputWrapper = styled.div`
   margin-bottom: 20px;
 `;
 
-const Input = styled.input`
+const Input = styled(Field)`
   background-color: #E3DDA1;
   width: 100%;
   height: 40px;
   padding: 10px;
-  padding-left: 40px; /* Espaço para os ícones */
+  padding-left: 40px; 
   border: 1px solid #747474;
   border-radius: 5px;
-`;
-
-const UserInput = styled(Input)`
-  padding-left: 40px; /* Espaço para o ícone do usuário */
-`;
-
-const PasswordInputWithShow = styled(Input)`
-  padding-left: 40px; /* Espaço para o ícone da senha */
 `;
 
 const Button = styled.button`
@@ -149,4 +148,4 @@ const Message = styled.p`
   text-align: center;
 `;
 
-export default RightPane;
+export default Login;
