@@ -123,5 +123,3 @@ export const ErrorMessageStyled = styled.span`
   font-size: 0.8em;
   color: red;
 `;
-
-

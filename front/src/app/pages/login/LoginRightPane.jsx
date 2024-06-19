@@ -1,26 +1,24 @@
-import React, { useState } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as yup from 'yup';
-import Axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import LockIcon from '@mui/icons-material/Lock';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import React, { useState } from 'react'
+import { Formik, Form, Field, ErrorMessage } from 'formik'
+import * as yup from 'yup'
+import Axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import styled from 'styled-components'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+import LockIcon from '@mui/icons-material/Lock'
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+import VisibilityIcon from '@mui/icons-material/Visibility'
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
-
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
-  };
+  }
 
   const handleLogin = (values) => {
     console.log("Tentando logar com valores:", values);
-
     Axios.post("http://localhost:3001/login", {
       email: values.email,
       senha: values.senha,
@@ -35,12 +33,12 @@ const Login = () => {
       console.error("Erro ao fazer login:", error);
       setMessage(error.response?.data?.msg || "Erro ao fazer login");
     });
-  };
+  }
 
   const validations = yup.object().shape({
     email: yup.string().email("Email inválido").required("O email é obrigatório"),
     senha: yup.string().required("A senha é obrigatória"),
-  });
+  })
 
   return (
     <RightPaneContainer>
@@ -80,7 +78,7 @@ const Login = () => {
       {message && <Message>{message}</Message>}
     </RightPaneContainer>
   );
-};
+}
 
 const RightPaneContainer = styled.div`
   width: 50%;
@@ -148,4 +146,4 @@ const Message = styled.p`
   text-align: center;
 `;
 
-export default Login;
+export default Login

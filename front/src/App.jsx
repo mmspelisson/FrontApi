@@ -1,16 +1,15 @@
-import React from "react";
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import Sidebar from "./app/shared/components/sidebar/Index.jsx";
-import Login from "./app/pages/login/Index.jsx";
-import Register from "./app/pages/registerUsers/Index.jsx";
-import Demand from "./app/pages/demand/Index.jsx";
-import MyGlobalStyles from "./app/styles/globalStyles.js";
-import Sector from "./app/pages/sector/Index.jsx";
-import KanbanBoard from "./app/pages/kanbanboard/Kanban.jsx";
-import Header from "./app/shared/components/header/Index.jsx";
-import PrivateRoute from "./app/shared/components/privateRoute/privateRoute.jsx";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import React from "react"
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom"
+import Sidebar from "./app/shared/components/sidebar/Index.jsx"
+import Login from "./app/pages/login/Index.jsx"
+import Register from "./app/pages/registerUsers/Index.jsx"
+import Demand from "./app/pages/demand/Index.jsx"
+import MyGlobalStyles from "./app/styles/globalStyles.js"
+import Sector from "./app/pages/sector/Index.jsx"
+import KanbanBoard from "./app/pages/kanbanboard/Kanban.jsx"
+import PrivateRoute from "./app/shared/components/privateRoute/privateRoute.jsx"
+import {  ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 export function App() {
   return (
@@ -37,4 +36,4 @@ export function App() {
   );
 }
 
-export default App;
+export default App

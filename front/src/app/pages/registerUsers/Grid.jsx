@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { Search, Edit, Delete } from '@mui/icons-material'; 
-import axios from 'axios';
+import React, { useState, useEffect } from 'react'
+import { DataGrid, GridToolbar } from '@mui/x-data-grid'
+import { Search, Edit, Delete } from '@mui/icons-material'
+import axios from 'axios'
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 90 },
@@ -12,22 +12,15 @@ const columns = [
   { field: 'liberacoes', headerName: 'Liberações', width: 150 },
   { field: 'contato', headerName: 'Contato', width: 200 },
   { field: 'cidadeUF', headerName: 'Cidade/UF', width: 150 },
-  {
-    field: 'edit',
-    headerName: '',
-    width: 100,
-    sortable: false,
+  { field: 'edit', headerName: '', width: 100, sortable: false,
+
     renderCell: () => (
       <div>
         <Edit style={{ cursor: 'pointer', marginRight: '8px' }} />
       </div>
     ),
   },
-  {
-    field: 'delete',
-    headerName: '',
-    width: 100,
-    sortable: false,
+  { field: 'delete', headerName: '', width: 100, sortable: false,
     renderCell: () => (
       <div>
         <Delete style={{ cursor: 'pointer', color: 'red' }} />
@@ -86,8 +79,18 @@ const CrudSimples = () => {
           components={{
             Toolbar: GridToolbar,
           }}
+          className="fixed-header"
         />
       </div>
+      <style>
+        {`
+          .fixed-header .MuiDataGrid-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+          }
+        `}
+      </style>
     </div>
   )
 }

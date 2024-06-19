@@ -1,6 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
-import LogoImage from '../../assets/our-plan-logo2.svg';
+import React from 'react'
+import styled from 'styled-components'
+import LogoImage from '../../assets/our-plan-logo2.svg'
 
 const LeftPane = () => {
   return (
@@ -55,4 +55,4 @@ const Subtitle = styled.h2`
   white-space: nowrap;
 `;
 
-export default LeftPane;
+export default LeftPane

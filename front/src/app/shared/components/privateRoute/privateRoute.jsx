@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import { Navigate } from "react-router-dom";
 
 const PrivateRoute = ({ children, permissions }) => {
@@ -35,8 +35,7 @@ const PrivateRoute = ({ children, permissions }) => {
     console.log("Usuário não tem permissão para acessar esta rota, redirecionando para /login");
     return <Navigate to="/login" />;
   }
-
   return children;
 };
 
-export default PrivateRoute;
+export default PrivateRoute
