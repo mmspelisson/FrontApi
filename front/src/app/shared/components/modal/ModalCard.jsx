@@ -1,5 +1,5 @@
-import React from 'react';
-import Modal from 'react-modal';
+import React from 'react'
+import Modal from 'react-modal'
 
 const CardModal = ({ isOpen, onRequestClose, demanda }) => {
     return (
@@ -21,4 +21,4 @@ const CardModal = ({ isOpen, onRequestClose, demanda }) => {
     );
 }
 
-export default CardModal;
+export default CardModal

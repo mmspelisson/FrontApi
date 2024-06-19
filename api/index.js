@@ -19,7 +19,7 @@ app.post("/register", (req, res) => {
     return res.status(400).send({ msg: "Todos os campos são obrigatórios" });
   }
 
-  // Verifica se o email já está cadastrado
+  // Verifica se o email já ta cadastrado
   db.query("SELECT * FROM usuarios WHERE email = ?", [email], (err, result) => {
     if (err) {
       console.error("Erro ao consultar o banco:", err);
@@ -27,7 +27,6 @@ app.post("/register", (req, res) => {
     }
 
     if (result.length === 0) {
-      // Se o email não estiver cadastrado, proceda com o cadastro do usuário
       bcrypt.hash(senha, saltRounds, (err, hash) => {
         if (err) {
           console.error("Erro ao hashear a senha:", err);
@@ -47,7 +46,6 @@ app.post("/register", (req, res) => {
         );
       });
     } else {
-      // Se o email já estiver cadastrado, envie uma mensagem de erro
       res.status(400).send({ msg: "Email já cadastrado" });
     }
   });
@@ -57,7 +55,6 @@ app.post("/register", (req, res) => {
 app.post("/login", (req, res) => {
   const { email, senha } = req.body;
   console.log("Tentativa de login:", req.body);
-
   if (!email || !senha) {
     return res.status(400).send({ msg: "Email e senha são obrigatórios" });
   }
@@ -91,9 +88,6 @@ app.post("/login", (req, res) => {
   });
 });
 
-
-
-
 // Mostrar os usuarios no GRID
 app.get('/users', (req, res) => {
   db.query("SELECT * FROM usuarios", (err, result) => {
@@ -106,7 +100,7 @@ app.get('/users', (req, res) => {
   });
 });
 
-// Obter todos os setores
+// recebe todos os setores
 app.get('/setor', (req, res) => {
   const query = 'SELECT * FROM setor';
   db.query(query, (err, result) => {
@@ -139,7 +133,7 @@ app.post("/registerSetor", (req, res) => {
   );
 });
 
-// Obter o próximo ID disponível
+// ter o proximo ID disponivel
 app.get('/lastId', (req, res) => {
   const query = 'SELECT MAX(id) AS lastId FROM usuarios';
   db.query(query, (err, result) => {
@@ -147,30 +141,24 @@ app.get('/lastId', (req, res) => {
       console.error('Erro ao obter último ID:', err);
       return res.status(500).send(err);
     }
-
     let lastId = 0;
     if (result.length > 0 && result[0].lastId !== null) {
       lastId = result[0].lastId;
     }
-
     const nextId = lastId + 1;
     res.json({ lastId, nextId });
   });
 });
 
-// Novo endpoint para cadastro de demanda
-// POST para cadastrar uma nova demanda
+//cadastrar demanda
 app.post("/demanda", (req, res) => {
-  const { tipo, descricao, prioridade } = req.body;
-
-  if (!tipo || !descricao || !prioridade) {
-    return res.status(400).send({ msg: "Tipo, Descrição e Prioridade são obrigatórios" });
+  const { tipo, descricao, prioridade, solicitante } = req.body;
+  if (!tipo || !descricao || !prioridade || !solicitante) {
+    return res.status(400).send({ msg: "Tipo, Descrição, Prioridade e Solicitante são obrigatórios" });
   }
-
-  // Insira os dados da demanda no banco de dados
   db.query(
-    "INSERT INTO demanda (tipo, descricao, prioridade) VALUES (?, ?, ?)",
-    [tipo, descricao, prioridade],
+    "INSERT INTO demanda (tipo, descricao, prioridade, solicitante) VALUES (?, ?, ?, ?)",
+    [tipo, descricao, prioridade, solicitante],
     (error, result) => {
       if (error) {
         console.error("Erro ao inserir demanda no banco:", error);
@@ -182,9 +170,7 @@ app.post("/demanda", (req, res) => {
   );
 });
 
-// GET para recuperar todas as demandas
 app.get("/demanda", (req, res) => {
-  // Recupere todas as demandas do banco de dados
   db.query("SELECT * FROM demanda", (error, result) => {
     if (error) {
       console.error("Erro ao buscar demandas:", error);
@@ -194,7 +180,7 @@ app.get("/demanda", (req, res) => {
   });
 });
 
-// Obter o próximo ID disponível para demanda
+// próximo ID disponível para demanda
 app.get('/lastDemandId', (req, res) => {
   const query = 'SELECT MAX(id) AS lastId FROM demanda';
   db.query(query, (err, result) => {
@@ -202,18 +188,16 @@ app.get('/lastDemandId', (req, res) => {
       console.error('Erro ao obter último ID de demanda:', err);
       return res.status(500).send(err);
     }
-
     let lastId = 0;
     if (result.length > 0 && result[0].lastId !== null) {
       lastId = result[0].lastId;
     }
-
     const nextId = lastId + 1;
     res.json({ lastId, nextId });
   });
 });
 
-// Obter o próximo ID disponível para setor
+// próximo ID disponível para setor
 app.get('/lastSectorId', (req, res) => {
   const query = 'SELECT MAX(id) AS lastId FROM setor';
   db.query(query, (err, result) => {
@@ -221,12 +205,10 @@ app.get('/lastSectorId', (req, res) => {
       console.error('Erro ao obter último ID de setor:', err);
       return res.status(500).send(err);
     }
-
     let lastId = 0;
     if (result.length > 0 && result[0].lastId !== null) {
       lastId = result[0].lastId;
     }
-
     const nextId = lastId + 1;
     res.json({ lastId, nextId });
   });
@@ -236,11 +218,9 @@ app.get('/lastSectorId', (req, res) => {
 app.put("/users/:id", (req, res) => {
   const userId = req.params.id;
   const { email, senha, nomeCompleto, setor, liberacoes, contato, cidadeUF } = req.body;
-
   if (!email || !nomeCompleto || !setor || !liberacoes || !contato || !cidadeUF) {
     return res.status(400).send({ msg: "Todos os campos são obrigatórios" });
   }
-
   const updateUser = (hashedSenha) => {
     db.query(
       "UPDATE usuarios SET nomeCompleto = ?, email = ?, senha = ?, setor = ?, liberacoes = ?, contato = ?, cidadeUF = ? WHERE id = ?",
@@ -284,7 +264,6 @@ app.put("/users/:id", (req, res) => {
 app.delete("/users/:id", (req, res) => {
   const userId = req.params.id;
 
-  // Exclui o usuário do banco
   db.query(
     "DELETE FROM usuarios WHERE id = ?",
     [userId],
@@ -342,7 +321,95 @@ app.delete("/setor/:id", (req, res) => {
   );
 });
 
-// Escutando na porta 3001
+
+//  todos os ceps
+app.get('/cep', (req, res) => {
+  const query = 'SELECT * FROM cep';
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error('Erro ao buscar cep:', err);
+      res.status(500).send(err);
+    } else {
+      res.status(200).send(result);
+    }
+  });
+});
+
+//  todos os bairros
+app.get('/bairro', (req, res) => {
+  const query = 'SELECT * FROM bairro';
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error('Erro ao buscar bairro:', err);
+      res.status(500).send(err);
+    } else {
+      res.status(200).send(result);
+    }
+  });
+});
+
+//  todos os estados
+app.get('/estados', (req, res) => {
+  const query = 'SELECT * FROM estados';
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error('Erro ao buscar estado:', err);
+      res.status(500).send(err);
+    } else {
+      res.status(200).send(result);
+    }
+  });
+});
+
+//  todos os cidades
+app.get('/cidades', (req, res) => {
+  const query = 'SELECT * FROM cidades';
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error('Erro ao buscar cidade:', err);
+      res.status(500).send(err);
+    } else {
+      res.status(200).send(result);
+    }
+  });
+});
+
+//  todos os paises
+app.get('/paises', (req, res) => {
+  const query = 'SELECT * FROM paises';
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error('Erro ao buscar pais:', err);
+      res.status(500).send(err);
+    } else {
+      res.status(200).send(result);
+    }
+  });
+});
+
+// Editar setor
+app.put("/updateSetor/:id", (req, res) => {
+  const setId = req.params.id;
+  const { nome } = req.body;
+  if (!nome) {
+    return res.status(400).send({ msg: "Nome do setor é obrigatório" });
+  }
+
+  // Atualiza o setor no banco
+  db.query(
+    "UPDATE setor SET setor = ? WHERE id = ?",
+    [nome, setId],
+    (error, result) => {
+      if (error) {
+        console.error("Erro ao atualizar setor no banco:", error);
+        return res.status(500).send(error);
+      }
+      console.log("Setor atualizado com sucesso");
+      res.send({ msg: "Setor atualizado com sucesso" });
+    }
+  );
+});
+
 app.listen(3001, () => {
   console.log("Servidor rodando na porta 3001");
 });

@@ -1,59 +1,69 @@
-import React, { useState, useEffect } from 'react';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { Search, Edit, Delete } from '@mui/icons-material';
-import axios from 'axios';
+import React from 'react'
+import { DataGrid, GridToolbar } from '@mui/x-data-grid'
+import { Search, Edit, Delete } from '@mui/icons-material'
+import axios from 'axios'
 
-const columns = [
-    { field: 'id', headerName: 'ID', width: 70, sortable: false },
-    { field: 'setor', headerName: 'Nome do Setor', width: 200, sortable: false },
-    {
-        field: 'edit',
-        headerName: '',
-        width: 100,
-        sortable: false,
-        renderCell: () => (
-            <div>
-                <Edit style={{ cursor: 'pointer', marginRight: '8px' }} />
-            </div>
-        ),
-    },
-    {
-        field: 'delete',
-        headerName: '',
-        width: 100,
-        sortable: false,
-        renderCell: () => (
-            <div>
-                <Delete style={{ cursor: 'pointer', color: 'red' }} />
-            </div>
-        ),
-    },
-];
+const CrudSimples2 = ({ setores, onEdit, onDelete }) => {
+    const columns = [
+        { field: 'id', headerName: 'ID', width: 70, sortable: false },
+        { field: 'setor', headerName: 'Nome do Setor', width: 200, sortable: false },
+        {
+            field: 'edit',
+            headerName: '',
+            width: 100,
+            sortable: false,
+            renderCell: (params) => (
+                <div>
+                    <Edit style={{ cursor: 'pointer', marginRight: '8px' }} onClick={() => onEdit(params.row)} />
+                </div>
+            ),
+        },
+        {
+            field: 'delete',
+            headerName: '',
+            width: 100,
+            sortable: false,
+            renderCell: (params) => (
+                <div>
+                    <Delete style={{ cursor: 'pointer', color: 'red' }} onClick={() => onDelete(params.row.id)} />
+                </div>
+            ),
+        },
+    ];
 
-const CrudSimples2 = () => {
-    const [rows, setRows] = useState([]);
-    const [filteredRows, setFilteredRows] = useState([]);
+    const [filteredRows, setFilteredRows] = React.useState(setores);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('http://localhost:3001/setor');
-                setRows(response.data);
-                setFilteredRows(response.data);
-            } catch (error) {
-                console.error('Erro ao buscar setores:', error);
-            }
-        };
-
-        fetchData();
-    }, []);
+    React.useEffect(() => {
+        setFilteredRows(setores);
+    }, [setores]);
 
     const handleSearch = (event) => {
         const searchQuery = event.target.value.toLowerCase();
-        const filteredData = rows.filter((row) =>
+        const filteredData = setores.filter((row) =>
             row.setor.toLowerCase().includes(searchQuery)
         );
         setFilteredRows(filteredData);
+    };
+
+    const handleUpdateSetor = (id, newData) => {
+        axios.put(`/updateSetor/${id}`, { nome: newData.nome })
+            .then(response => {
+                console.log('Setor atualizado com sucesso:', response.data);
+            })
+            .catch(error => {
+                console.error('Erro ao atualizar setor:', error);
+            });
+    };
+
+    const handleDeleteSetor = (id) => {
+        axios.delete(`/setor/${id}`)
+            .then(response => {
+                console.log('Setor excluído com sucesso:', response.data);
+                onDelete(id);
+            })
+            .catch(error => {
+                console.error('Erro ao excluir setor:', error);
+            });
     };
 
     return (
@@ -75,8 +85,12 @@ const CrudSimples2 = () => {
                     rowsPerPageOptions={[5]}
                     autoHeight
                     disableColumnResize
+                    columnBuffer={2}
                     components={{
                         Toolbar: GridToolbar,
+                    }}
+                    onEditCellChangeCommitted={(params) => {
+                        handleUpdateSetor(params.id, params.newValue);
                     }}
                 />
             </div>
@@ -84,4 +98,4 @@ const CrudSimples2 = () => {
     );
 };
 
-export default CrudSimples2;
+export default CrudSimples2

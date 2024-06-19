@@ -1,26 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as yup from 'yup';
-import axios from 'axios';
-import {
-    HeaderSpacer,
-    SubHeaderWrapper,
-    FormWrapper,
-    FormContainer,
-    LabelContainer,
-    LabelText,
-    StyledInput,
-    StyledSelect,
-    ButtonContainer,
-    SubmitButton,
-    ClearButton,
-    ErrorMessageStyled,
-    StyledTextarea
-} from './Styles';
+import React, { useState, useEffect } from 'react'
+import { Formik, Form, Field, ErrorMessage } from 'formik'
+import * as yup from 'yup'
+import axios from 'axios'
+import { HeaderSpacer, SubHeaderWrapper, FormWrapper, FormContainer, LabelContainer, LabelText, StyledInput, StyledSelect, ButtonContainer, SubmitButton, ClearButton, ErrorMessageStyled, StyledTextarea } from './Styles'
+import ModalCadastroDemanda from '../../shared/components/modal/ModalCadastroDem'
 
 function CadastroDemanda({ onDemandAdded }) {
     const [id, setId] = useState('');
     const [solicitante, setSolicitante] = useState('');
+    const [showModal, setShowModal] = useState(false);  
 
     useEffect(() => {
         axios.get('http://localhost:3001/lastDemandId')
@@ -30,23 +18,30 @@ function CadastroDemanda({ onDemandAdded }) {
             .catch((error) => {
                 console.error('Erro ao obter o próximo ID de demanda:', error);
             });
-
-        axios.get('http://localhost:3001/solicitante')
-            .then((response) => {
-                setSolicitante(response.data.solicitante);
-            })
-            .catch((error) => {
-                console.error('Erro ao obter o solicitante:', error);
-            });
+        
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            const user = JSON.parse(storedUser);
+            setSolicitante(user.email);
+        }
     }, []);
 
     const handleSubmit = (data, { resetForm }) => {
-        console.log('Dados enviados para o backend:', data); 
-        axios.post('http://localhost:3001/demanda', data)
+        const novaDemanda = {
+            tipo: data.tipo,
+            descricao: data.descricao,
+            prioridade: data.prioridade,
+            solicitante: solicitante 
+        };
+    
+        axios.post('http://localhost:3001/demanda', novaDemanda)
             .then((response) => {
                 if (response.status === 200) {
                     console.log('Demanda cadastrada com sucesso!');
                     resetForm();
+                    onDemandAdded(novaDemanda);
+                    setShowModal(true);
+                    console.log('showModal:', showModal); 
                 } else {
                     console.error('Erro ao cadastrar demanda:', response.data);
                 }
@@ -55,14 +50,13 @@ function CadastroDemanda({ onDemandAdded }) {
                 console.error('Erro ao cadastrar demanda:', error);
             });
     };
-
     return (
         <>
             <HeaderSpacer />
             <SubHeaderWrapper>Cadastro de Demanda</SubHeaderWrapper>
             <Formik
                 initialValues={{
-                    solicitante: '',
+                    solicitante: solicitante, 
                     tipo: '',
                     descricao: '',
                     prioridade: ''
@@ -73,6 +67,7 @@ function CadastroDemanda({ onDemandAdded }) {
                     descricao: yup.string().required('Descrição é obrigatória'),
                     prioridade: yup.string().required('Prioridade é obrigatória')
                 })}
+                enableReinitialize={true} 
             >
                 {({ resetForm }) => (
                     <Form>
@@ -95,6 +90,8 @@ function CadastroDemanda({ onDemandAdded }) {
                                         <option value="Banco">Banco</option>
                                         <option value="Reconfiguração">Reconfiguração</option>
                                         <option value="Feature">Feature</option>
+                                        <option value="Demanda Simples">Demanda Simples</option>
+                                        <option value="Bug">Bug</option>
                                     </Field>
                                     <ErrorMessage name="tipo" component={ErrorMessageStyled} />
                                 </LabelContainer>
@@ -135,8 +132,9 @@ function CadastroDemanda({ onDemandAdded }) {
                 )}
             </Formik>
             <HeaderSpacer height="50px" />
+            <ModalCadastroDemanda show={showModal} onClose={() => setShowModal(false)} />  
         </>
     );
 }
-export default CadastroDemanda;
 
+export default CadastroDemanda;
