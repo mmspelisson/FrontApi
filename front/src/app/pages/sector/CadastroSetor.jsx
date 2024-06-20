@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react'
-import { FormWrapper, FormContainer, LabelContainer, LabelText, StyledInput, ButtonContainer, SubmitButton, ClearButton, SubHeaderWrapper, HeaderSpacer } from './Styles'
-import axios from 'axios'
-import CrudSimples2 from '../sector/Grid'
-import ModalCadastroSetor from '../../shared/components/modal/ModalCadastroSet'
+import React, { useState, useEffect } from 'react';
+import { FormWrapper, FormContainer, LabelContainer, LabelText, StyledInput, ButtonContainer, SubmitButton, ClearButton, SubHeaderWrapper, HeaderSpacer } from './Styles';
+import axios from 'axios';
+import CrudSimples2 from '../sector/Grid';
+import ModalCadastroSetor from '../../shared/components/modal/ModalCadastroSet';
+import ModalAtualizacaoSucesso from '../../shared/components/modal/ModalAtualizacao';
 
 function CadastroSetor() {
   const [id, setId] = useState(1);
   const [nome, setNome] = useState('');
   const [setores, setSetores] = useState([]);
   const [editing, setEditing] = useState(false);
-  const [showModal, setShowModal] = useState(false); 
+  const [showModalCadastro, setShowModalCadastro] = useState(false);
+  const [showModalAtualizacao, setShowModalAtualizacao] = useState(false);
 
   const fetchSetores = () => {
     axios.get('http://localhost:3001/setor')
@@ -44,7 +46,7 @@ function CadastroSetor() {
             setId(id + 1);
             setEditing(false);
             fetchSetores();
-            setShowModal(true); 
+            setShowModalAtualizacao(true);
           } else {
             console.error('Erro ao atualizar setor!', response.data);
           }
@@ -60,7 +62,7 @@ function CadastroSetor() {
             setNome('');
             setId(id + 1);
             fetchSetores();
-            setShowModal(true); 
+            setShowModalCadastro(true);
           } else {
             console.error('Erro ao cadastrar setor!', response.data);
           }
@@ -83,7 +85,7 @@ function CadastroSetor() {
   };
 
   const handleDelete = (setorId) => {
-    axios.delete(`http://localhost:3001/Setor/${setorId}`)
+    axios.delete(`http://localhost:3001/setor/${setorId}`)
       .then((response) => {
         if (response.status === 200) {
           console.log('Setor deletado com sucesso');
@@ -117,7 +119,8 @@ function CadastroSetor() {
           </ButtonContainer>
         </FormContainer>
       </FormWrapper>
-      <ModalCadastroSetor show={showModal} onClose={() => setShowModal(false)} />
+      <ModalCadastroSetor show={showModalCadastro} onClose={() => setShowModalCadastro(false)} />
+      <ModalAtualizacaoSucesso show={showModalAtualizacao} onClose={() => setShowModalAtualizacao(false)} />
       <HeaderSpacer height="50px" />
       <div style={{ marginTop: '30px' }}>
         <CrudSimples2 setores={setores} onEdit={handleEdit} onDelete={handleDelete} />
@@ -126,4 +129,4 @@ function CadastroSetor() {
   );
 }
 
-export default CadastroSetor
+export default CadastroSetor;

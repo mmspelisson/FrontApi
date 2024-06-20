@@ -22,7 +22,7 @@ const visibleStyles = {
     visibility: 'visible',
 };
 
-function ModalCadastroDemanda({ show, onClose }) {
+function ModalAtualizacaoSucesso({ show, onClose }) {
     useEffect(() => {
         if (show) {
             const timer = setTimeout(() => {
@@ -36,9 +36,9 @@ function ModalCadastroDemanda({ show, onClose }) {
 
     return (
         <div style={{ ...modalStyles, ...modalStyle }}>
-            Você cadastrou essa demanda com sucesso!
+            Atualização bem sucedida!
         </div>
     );
 }
 
-export default ModalCadastroDemanda;
+export default ModalAtualizacaoSucesso;

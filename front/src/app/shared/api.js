@@ -1,4 +1,6 @@
 //Carrega os cards na board --- NÃO ESQUECER DE MUDAR A BOARD E O WORKSPACE
+
+
 export default class Api {
     Workspace_id = 3
     board_id = 4
@@ -39,7 +41,7 @@ export default class Api {
     }
 }
 
-// criar cardd com as especificações do título DEFINIR AS ESPECIFICAÇÕES
+// criar cardd com as especificações do título -- DEFINIR AS ESPECIFICAÇÕES
 const newCardData = {
     "title": "Novo Cartão",
     "description": "Descrição do cartão",

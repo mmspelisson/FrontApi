@@ -156,6 +156,7 @@ app.post("/demanda", (req, res) => {
   if (!tipo || !descricao || !prioridade || !solicitante) {
     return res.status(400).send({ msg: "Tipo, Descrição, Prioridade e Solicitante são obrigatórios" });
   }
+  
   db.query(
     "INSERT INTO demanda (tipo, descricao, prioridade, solicitante) VALUES (?, ?, ?, ?)",
     [tipo, descricao, prioridade, solicitante],
@@ -279,7 +280,7 @@ app.delete("/users/:id", (req, res) => {
 });
 
 // Editar setor
-app.put("/setor/:id", (req, res) => {
+app.put("/updateSetor/:id", (req, res) => {
   const setId = req.params.id;
   const { nome } = req.body;
 
@@ -321,93 +322,17 @@ app.delete("/setor/:id", (req, res) => {
   );
 });
 
-
-//  todos os ceps
-app.get('/cep', (req, res) => {
-  const query = 'SELECT * FROM cep';
-  db.query(query, (err, result) => {
+app.get('/cidade/uf', (req, res) => {
+  const idEstado = req.params.idEstado;
+  const query = 'SELECT * FROM cidades WHERE ID_Estado = ?';
+  db.query(query, [idEstado], (err, result) => {
     if (err) {
-      console.error('Erro ao buscar cep:', err);
+      console.error('Erro ao buscar cidades:', err);
       res.status(500).send(err);
     } else {
       res.status(200).send(result);
     }
   });
-});
-
-//  todos os bairros
-app.get('/bairro', (req, res) => {
-  const query = 'SELECT * FROM bairro';
-  db.query(query, (err, result) => {
-    if (err) {
-      console.error('Erro ao buscar bairro:', err);
-      res.status(500).send(err);
-    } else {
-      res.status(200).send(result);
-    }
-  });
-});
-
-//  todos os estados
-app.get('/estados', (req, res) => {
-  const query = 'SELECT * FROM estados';
-  db.query(query, (err, result) => {
-    if (err) {
-      console.error('Erro ao buscar estado:', err);
-      res.status(500).send(err);
-    } else {
-      res.status(200).send(result);
-    }
-  });
-});
-
-//  todos os cidades
-app.get('/cidades', (req, res) => {
-  const query = 'SELECT * FROM cidades';
-  db.query(query, (err, result) => {
-    if (err) {
-      console.error('Erro ao buscar cidade:', err);
-      res.status(500).send(err);
-    } else {
-      res.status(200).send(result);
-    }
-  });
-});
-
-//  todos os paises
-app.get('/paises', (req, res) => {
-  const query = 'SELECT * FROM paises';
-  db.query(query, (err, result) => {
-    if (err) {
-      console.error('Erro ao buscar pais:', err);
-      res.status(500).send(err);
-    } else {
-      res.status(200).send(result);
-    }
-  });
-});
-
-// Editar setor
-app.put("/updateSetor/:id", (req, res) => {
-  const setId = req.params.id;
-  const { nome } = req.body;
-  if (!nome) {
-    return res.status(400).send({ msg: "Nome do setor é obrigatório" });
-  }
-
-  // Atualiza o setor no banco
-  db.query(
-    "UPDATE setor SET setor = ? WHERE id = ?",
-    [nome, setId],
-    (error, result) => {
-      if (error) {
-        console.error("Erro ao atualizar setor no banco:", error);
-        return res.status(500).send(error);
-      }
-      console.log("Setor atualizado com sucesso");
-      res.send({ msg: "Setor atualizado com sucesso" });
-    }
-  );
 });
 
 app.listen(3001, () => {
