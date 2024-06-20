@@ -1,156 +1,76 @@
-import React, { useState, useEffect } from 'react'
-import { Formik, Form, Field, ErrorMessage } from 'formik'
-import * as yup from 'yup'
-import axios from 'axios'
-import CrudSimples from './Grid'
-import { Container, FormWrapper, FormContainer, LabelContainer, LabelText, StyledInput, StyledSelect, ButtonContainer, SubmitButton, ClearButton, SubHeaderWrapper, HeaderSpacer, ErrorMessageStyled } from './Styles'
-import ModalCadastroUsuario from '../../shared/components/modal/ModalCadastroUs'
+import React, { useState, useEffect } from 'react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as yup from 'yup';
+import axios from 'axios';
+import CrudSimples from './Grid';
+import { Container, FormWrapper, FormContainer, LabelContainer, LabelText, StyledInput, StyledSelect, ButtonContainer, SubmitButton, ClearButton, SubHeaderWrapper, HeaderSpacer, ErrorMessageStyled } from './Styles';
+import ModalCadastroUsuario from '../../shared/components/modal/ModalCadastroUs';
+import ModalAtualizacaoSucesso from '../../shared/components/modal/ModalAtualizacao';
 
 function CadastroUsuario() {
   const [refreshGrid, setRefreshGrid] = useState(false);
   const [setores, setSetores] = useState([]);
   const [nextId, setNextId] = useState('');
-  const [paises, setPaises] = useState([]);
-  const [estados, setEstados] = useState([]);
-  const [cidades, setCidades] = useState([]);
-  const [bairros, setBairros] = useState([]);
-  const [ceps, setCeps] = useState([]);
-  const [selectedPais, setSelectedPais] = useState('');
-  const [selectedEstado, setSelectedEstado] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [editingUser, setEditingUser] = useState(null); 
+  const [showUpdateSuccessModal, setShowUpdateSuccessModal] = useState(false);
+
 
   useEffect(() => {
     Promise.all([
       axios.get('http://localhost:3001/setor'),
       axios.get('http://localhost:3001/lastId'),
-      axios.get('http://localhost:3001/cep'),
-      axios.get('http://localhost:3001/bairros'),
-      axios.get('http://localhost:3001/paises')
     ])
-      .then(([setoresResponse, lastIdResponse, cepResponse, bairrosResponse, paisesResponse]) => {
+      .then(([setoresResponse, lastIdResponse]) => {
         setSetores(setoresResponse.data);
-        setNextId(lastIdResponse.data.lastId + 1);
-        setCeps(cepResponse.data);
-        setBairros(bairrosResponse.data);
-        setPaises(paisesResponse.data);
+        setNextId(lastIdResponse.data.nextId);
       })
       .catch(error => {
         console.error("Erro ao buscar dados:", error);
       });
   }, []);
 
-  const handleCidadeChange = (event) => {
-  };
-
-  const handleCepChange = (event) => {
-  };
-
-  const handleBairroChange = (event) => {
-  };
-
-  const handlePaisChange = (event) => {
-    const selectedPais = event.target.value;
-    setSelectedPais(selectedPais);
-    setSelectedEstado('');
-    axios.get(`http://localhost:3001/estados/${selectedPais}`)
-      .then(response => {
-        setEstados(response.data);
-      })
-      .catch(error => {
-        console.error("Erro ao buscar estados:", error);
-      });
-  };
-
-  const handleEstadoChange = (event) => {
-    const selectedEstado = event.target.value;
-    setSelectedEstado(selectedEstado);
-    axios.get(`http://localhost:3001/cidades/${selectedEstado}`)
-      .then(response => {
-        setCidades(response.data);
-      })
-      .catch(error => {
-        console.error("Erro ao buscar cidades:", error);
-      });
-  };
-
-  useEffect(() => {
-    axios.get('http://localhost:3001/setor')
-      .then((response) => {
-        setSetores(response.data);
-      })
-      .catch((error) => {
-        console.error("Erro ao buscar setores:", error);
-      });
-
-    axios.get('http://localhost:3001/lastId')
-      .then((response) => {
-        setNextId(response.data.lastId + 1);
-      })
-      .catch((error) => {
-        console.error("Erro ao obter último ID:", error);
-      });
-
-    axios.get('http://localhost:3001/cep')
-      .then((response) => {
-        setCeps(response.data);
-      })
-      .catch((error) => {
-        console.error("Erro ao buscar ceps:", error);
-      });
-
-    axios.get('http://localhost:3001/bairros')
-      .then(response => {
-        setBairros(response.data);
-      })
-      .catch(error => {
-        console.error("Erro ao buscar bairros:", error);
-      });
-
-    axios.get('http://localhost:3001/estados')
-      .then(response => {
-        setEstados(response.data);
-      })
-      .catch(error => {
-        console.error("Erro ao buscar estados:", error);
-      });
-
-    axios.get('http://localhost:3001/cidades')
-      .then(response => {
-        setCidades(response.data);
-      })
-      .catch(error => {
-        console.error("Erro ao buscar cidades:", error);
-      });
-
-    axios.get('http://localhost:3001/paises')
-      .then(response => {
-        setPaises(response.data);
-      })
-      .catch(error => {
-        console.error("Erro ao buscar paises:", error);
-      });
-
-  }, []);
-
   const handleSubmit = (values, { resetForm }) => {
-    const { id, ...data } = values;
-    axios.post('http://localhost:3001/register', data)
-      .then((response) => {
-        if (response.status === 200) {
-          console.log('Usuário cadastrado com sucesso!');
+    const { id, ...data } = values;  
+
+    if (editingUser) {
+      axios.put(`http://localhost:3001/users/${editingUser.id}`, data)
+        .then((response) => {
+          if (response.status === 200) {
+            console.log('Usuário atualizado com sucesso!');
+            setRefreshGrid(!refreshGrid);
+            setShowUpdateSuccessModal(true);
+            setEditingUser(null);
+          } else {
+            console.error('Erro ao atualizar usuário:', response.data);
+          }
+        })
+        .catch((error) => {
+          console.error('Erro ao atualizar usuário:', error);
+        });
+    } else {
+      axios.post('http://localhost:3001/register', data)
+        .then((response) => {
+          if (response.status === 200) {
+            console.log('Usuário cadastrado com sucesso!');
+            setShowModal(true);
+            setRefreshGrid(!refreshGrid);
+            resetForm();
+            setNextId(nextId + 1);
+          } else {
+            console.error('Erro ao cadastrar usuário:', response.data);
+            setShowModal(true);
+          }
+        })
+        .catch((error) => {
+          console.error('Erro ao cadastrar usuário:', error);
           setShowModal(true);
-          setRefreshGrid(!refreshGrid);
-          resetForm();
-          setNextId(nextId + 1);
-        } else {
-          console.error('Erro ao cadastrar usuário:', response.data);
-          setShowModal(true);
-        }
-      })
-      .catch((error) => {
-        console.error('Erro ao cadastrar usuário:', error);
-        setShowModal(true);
-      });
+        });
+    }
+  };
+
+  const handleEdit = (user) => {
+    setEditingUser(user); // Define o usuário a ser editado
   };
 
   return (
@@ -165,12 +85,9 @@ function CadastroUsuario() {
           setor: '',
           liberacoes: '',
           contato: '',
-          cep: '',
-          bairro: '',
-          pais: '',
-          cidade: '',
-          estado: ''
+          cidadeUF: '', // Mantendo cidadeUF
         }}
+        enableReinitialize 
         onSubmit={handleSubmit}
         validationSchema={yup.object().shape({
           email: yup.string().required('Email é obrigatório').email('Email inválido'),
@@ -179,22 +96,14 @@ function CadastroUsuario() {
           setor: yup.string().required('Setor é obrigatório'),
           liberacoes: yup.string().required('A liberação é obrigatória'),
           contato: yup.string().required('Contato é obrigatório'),
-          cep: yup.string().required('Cep é obrigatório'),
-          bairro: yup.string().required('Bairro é obrigatório'),
-          pais: yup.string().required('Pais é obrigatório'),
-          cidade: yup.string().required('Cidade é obrigatória'),
-          estado: yup.string().required('Estado é obrigatório')
+          cidadeUF: yup.string().required('Cidade/UF é obrigatória'),
         })}
       >
-        {({ resetForm }) => (
+        {({ resetForm, setValues }) => (
           <Form>
             <FormWrapper>
               <FormContainer>
-                <LabelContainer>
-                  <LabelText>ID:</LabelText>
-                  <StyledInput as="input" type="text" name="id" value={nextId} readOnly />
-                </LabelContainer>
-
+                {editingUser && <StyledInput type="hidden" name="id" value={editingUser.id} />}
                 <LabelContainer>
                   <LabelText>Email:</LabelText>
                   <Field as={StyledInput} type="text" name="email" placeholder="Email" />
@@ -241,76 +150,23 @@ function CadastroUsuario() {
                 </LabelContainer>
 
                 <LabelContainer>
-                  <LabelText>Pais:</LabelText>
-                  <Field as={StyledSelect} name="pais" onChange={handlePaisChange}>
-                    <option value="">Selecione o pais</option>
-                    {paises.map((pais) => (
-                      <option key={pais.id} value={pais.pais}>{pais.pais}</option>
-                    ))}
-                  </Field>
-                  <ErrorMessage name="pais" component={ErrorMessageStyled} />
+                  <LabelText>Cidade/UF:</LabelText>
+                  <Field as={StyledInput} type="text" name="cidadeUF" placeholder="Cidade/UF" />
+                  <ErrorMessage name="cidadeUF" component={ErrorMessageStyled} />
                 </LabelContainer>
-
-                <LabelContainer>
-                  <LabelText>Estado:</LabelText>
-                  <Field as={StyledSelect} name="estado" onChange={handleEstadoChange}>
-                    <option value="">Selecione o estado</option>
-                    {estados.map((estado) => (
-                      <option key={estado.id} value={estado.estado}>{estado.estado}</option>
-                    ))}
-                  </Field>
-                  <ErrorMessage name="estado" component={ErrorMessageStyled} />
-                </LabelContainer>
-
-                <LabelContainer>
-                  <LabelText>Cidade:</LabelText>
-                  <Field as={StyledSelect} name="cidade" onChange={handleCidadeChange}>
-                    <option value="">Selecione o estado</option>
-                    {cidades.map((cidade) => (
-                      <option key={cidade.id} value={cidade.cidade}>{cidade.cidade}</option>
-                    ))}
-                  </Field>
-                  <ErrorMessage name="cidade" component={ErrorMessageStyled} />
-                </LabelContainer>
-
-                <LabelContainer>
-                  <LabelText>Cep:</LabelText>
-                  <Field as={StyledSelect} name="cep" onChange={handleCepChange}>
-                    <option value="">Selecione o CEP</option>
-                    {ceps.map((cep) => (
-                      <option key={cep.id} value={cep.cep}>{cep.cep}</option>
-                    ))}
-                  </Field>
-                  <ErrorMessage name="cep" component={ErrorMessageStyled} />
-                </LabelContainer>
-
-                <LabelContainer>
-                  <LabelText>Bairro:</LabelText>
-                  <Field as={StyledSelect} name="bairro" onChange={handleBairroChange}>
-                    <option value="">Selecione o bairro</option>
-                    {bairros.map((bairro) => (
-                      <option key={bairro.id} value={bairro.bairro}>{bairro.bairro}</option>
-                    ))}
-                  </Field>
-                  <ErrorMessage name="bairro" component={ErrorMessageStyled} />
-                </LabelContainer>
-
               </FormContainer>
               <ButtonContainer>
-                <SubmitButton type="submit">Confirmar</SubmitButton>
-                <ClearButton type="button" onClick={resetForm}>Limpar</ClearButton>
+                <SubmitButton type="submit">{editingUser ? 'Atualizar' : 'Confirmar'}</SubmitButton>
+                {!editingUser && <ClearButton type="button" onClick={resetForm}>Limpar</ClearButton>}
               </ButtonContainer>
             </FormWrapper>
           </Form>
         )}
       </Formik>
-      <ModalCadastroUsuario show={showModal} onClose={() => setShowModal(false)} />
-      <div style={{ marginTop: '20px' }}>
-        <CrudSimples key={refreshGrid} />
-      </div>
-      <HeaderSpacer height="50px" />
+      {showUpdateSuccessModal && <ModalAtualizacaoSucesso onClose={() => setShowUpdateSuccessModal(false)} />}
+      <CrudSimples refreshGrid={refreshGrid} handleEdit={handleEdit} />
     </>
   );
 }
 
-export default CadastroUsuario
+export default CadastroUsuario;
