@@ -7,9 +7,9 @@ import {
     StyledInput, StyledSelect, ButtonContainer, SubmitButton, ClearButton, ErrorMessageStyled, StyledTextarea
 } from './Styles';
 import ModalCadastroDemanda from '../../shared/components/modal/ModalCadastroDem';
-import { useDemandContext } from './DemandContext';
 
-function CadastroDemanda({ onDemandAdded = () => { } }) {
+
+function CadastroDemanda({ onDemandAdded = () => {} }) {
     const [id, setId] = useState('');
     const [solicitante, setSolicitante] = useState('');
     const [showModal, setShowModal] = useState(false);
@@ -36,7 +36,7 @@ function CadastroDemanda({ onDemandAdded = () => { } }) {
             descricao: data.descricao,
             prioridade: data.prioridade,
             solicitante: solicitante,
-            column: "Solicitados"
+            coluna: "Solicitados"
         };
 
         axios.post('http://localhost:3001/demanda', novaDemanda)
@@ -46,6 +46,8 @@ function CadastroDemanda({ onDemandAdded = () => { } }) {
                     resetForm();
                     onDemandAdded(novaDemanda);
                     setShowModal(true);
+                    // Adicione a nova demanda localmente, se necessário
+                    // addDemand(response.data); 
                 } else {
                     console.error('Erro ao cadastrar demanda:', response.data);
                 }

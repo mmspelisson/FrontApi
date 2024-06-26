@@ -1,42 +1,54 @@
-//Carrega os cards na board --- NÃO ESQUECER DE MUDAR A BOARD E O WORKSPACE
 
-
+import axios from 'axios'
 export default class Api {
-    Workspace_id = 3
-    board_id = 4
-    apikey = 'UBRUGGZpWklIbgQQqeWCGgTTN8fpRYTPUZGsesko'
+    Workspace_id = 1
+    board_id = 2
+    apikey = 'fRhAgRxaX5Jib9zb4p29GKD4tomTrx6wdPTPo0iZ'
 
     // obter cartões
     static async getCards() {
         const data = null
-        await fetch(`https://empresadamilenam.kanbanize.com/api/v2/cards?board_ids=${4}`, {
-            method: 'GET',
+        // let data = cards;
+
+       axios.get('https://ourplanv9.kanbanize.com/api/v2/cards?board_ids=2', {
+            method: 'get',
             headers: {
-                'content-type': 'application/json',
-                apikey: 'UBRUGGZpWklIbgQQqeWCGgTTN8fpRYTPUZGsesko',
-            },
-        })
-            .then((response) => response.json())
-            .then((result) => data = result)
-            .catch((error) => console.error(error));
-        return data;
-    }
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "http://ourplanv9.kanbanize.com",
+                "Access-Controll-Allow-Methods": "http://ourplanv9.kanbanize.com'",
+                "Access-Control-Allow-Headers": "http://ourplanv9.kanbanize.com'",
+                mode: 'cors',
+                accept: 'application/json',
+                apikey: 'fRhAgRxaX5Jib9zb4p29GKD4tomTrx6wdPTPo0iZ'
+            }
+        })  
+            .then((response) => {
+                data = response
+                console.log(JSON.stringify(response.data));
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        }
 
     // p/ criar um cartão novo
     static async createCard(cardData) {
         let data = null;
-        await fetch('https://empresadamilenam.kanbanize.com/api/v2/cards', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'apikey': this.apikey,
-                'accept': 'application/json',
-            },
-            body: JSON.stringify(cardData),
-        })
-            .then((response) => response.json())
-            .then((result) => data = result)
-            .catch((error) => console.error(error));
+        let myHeaders = new Headers();
+        myHeaders.append("accept", " application/json");
+        myHeaders.append("apikey", "fRhAgRxaX5Jib9zb4p29GKD4tomTrx6wdPTPo0iZ");
+
+        let requestOptions = {
+            mode: 'cors',
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch("https://ourplanv9.kanbanize.com/api/v2/cards", requestOptions)
+            .then(response => response.json())
+            .then(result => data = result)
+            .catch(error => console.error('error', error));
         return data;
     }
 }
@@ -47,7 +59,3 @@ const newCardData = {
     "description": "Descrição do cartão",
 };
 
-// criando novo card
-Api.createCard(newCardData).then((response) => {
-    console.log("Novo Card Criado:", response);
-});

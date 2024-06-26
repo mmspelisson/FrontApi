@@ -1,7 +1,9 @@
-import React from 'react'
-import Modal from 'react-modal'
+import React from 'react';
+import Modal from 'react-modal';
 
 const CardModal = ({ isOpen, onRequestClose, demanda }) => {
+    if (!demanda) return null;
+
     return (
         <Modal
             isOpen={isOpen}
@@ -11,14 +13,15 @@ const CardModal = ({ isOpen, onRequestClose, demanda }) => {
         >
             <h2>Detalhes da Demanda</h2>
             <div>
-                {/* <p><strong>Título:</strong> {demanda.title}</p>
-                <p><strong>Quem solicitou:</strong> {demanda.requestedBy}</p>
-                <p><strong>Tipo:</strong> {demanda.type}</p>
-                <p><strong>Descrição:</strong> {demanda.description}</p> */}
+                <p><strong>ID:</strong> {demanda.id}</p>
+                <p><strong>Solicitante:</strong> {demanda.solicitante}</p>
+                <p><strong>Tipo:</strong> {demanda.tipo}</p>
+                <p><strong>Descrição:</strong> {demanda.descricao}</p>
+                <p><strong>Prioridade:</strong> {demanda.prioridade}</p>
             </div>
             <button onClick={onRequestClose}>Fechar</button>
         </Modal>
     );
 }
 
-export default CardModal
+export default CardModal;

@@ -1,21 +1,21 @@
-// import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
-// const DemandContext = createContext();
+const DemandContext = createContext();
 
-// export const useDemandContext = () => useContext(DemandContext);
+export function useDemandContext() {
+  return useContext(DemandContext);
+}
 
-// export const DemandProvider = ({ children }) => {
-//     const [demands, setDemands] = useState([]);
+export function DemandProvider({ children }) {
+  const [demands, setDemands] = useState([]);
 
-//     const addDemand = (newDemand) => {
-//         setDemands(prevDemands => [...prevDemands, newDemand]);
-//     };
+  const addDemand = (demand) => {
+    setDemands((prevDemands) => [...prevDemands, demand]);
+  };
 
-//     return (
-//         <DemandContext.Provider value={{ demands, addDemand }}>
-//             {children}
-//         </DemandContext.Provider>
-//     );
-// };
-
-// export default DemandContext;
+  return (
+    <DemandContext.Provider value={{ demands, addDemand }}>
+      {children}
+    </DemandContext.Provider>
+  );
+}
