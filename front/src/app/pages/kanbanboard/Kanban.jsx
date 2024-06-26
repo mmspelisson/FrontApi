@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react'
-import Header from '../../shared/components/header/Index'
-import Sidebar from '../../shared/components/sidebar/Index'
-import './Styles.css'
-import Api from '../../shared/api'
-import { HeaderSpacer } from '../registerUsers/Styles'
-import BasicCard from '../../shared/components/card/Card'
-// import CadastroDemanda from '../demand/CadastroDemanda'
+import React, { useState, useEffect } from 'react';
+import Header from '../../shared/components/header/Index';
+import Sidebar from '../../shared/components/sidebar/Index';
+import './Styles.css';
+import Api from '../../shared/api';
+import { HeaderSpacer } from '../registerUsers/Styles';
+import BasicCard from '../../shared/components/card/Card';
 
 const UserFilter = ({ userEmail }) => {
   return (
@@ -30,17 +29,18 @@ const KanbanBoard = () => {
     }
   }, []);
 
+  useEffect(() => {
+    fetchDemandCards();
+  }, []);
+
   const fetchDemandCards = () => {
     Api.getCards()
       .then((cards) => {
+        console.log({cards})
         setDemandCards(cards || []);
       })
       .catch((error) => console.error(error));
   }
-
-  useEffect(() => {
-    fetchDemandCards();
-  }, []);
 
   const handleCardClick = (card) => {
   }
@@ -50,15 +50,19 @@ const KanbanBoard = () => {
   }
 
   const handleDemandAdded = (newDemand) => {
-    setDemandCards(prevState => [...prevState, newDemand]);
-  };
+    newDemand.coluna = 'Solicitados';  // Definindo a coluna como "Solicitados" para a nova demanda
+    setDemandCards(prevCards => [...prevCards, newDemand]);
+    console.log('Nova demanda adicionada:', newDemand);
+  }
 
   return (
     <div>
       <Header />
       <HeaderSpacer />
       <div className="SubHeaderWrapper">
-        <span>Controle de Demandas</span>
+        <div className="subheader-content">
+          <span>Controle de Demandas</span>
+        </div>
         <div className="refresh-button-container">
           <button onClick={handleRefresh} className="refresh-button">⟲</button>
         </div>
@@ -67,82 +71,36 @@ const KanbanBoard = () => {
         <UserFilter userEmail={userEmail} />
         <Sidebar />
         <div className="kanban-board">
-          <div className="column">
-            <h2>Solicitados</h2>
-            <div className="sub-column">
-              {demandCards.filter(card => card.column === 'Solicitados').map((card) => (
-                <BasicCard
-                  key={card.id}
-                  title={card.title}
-                  description={card.description}
-                  onClick={() => handleCardClick(card)} />
-              ))}
-            </div>
-          </div>
-          <div className="column">
-            <h2>Backlog</h2>
-            <div className="sub-column">
-              {demandCards.filter(card => card.column === 'Backlog').map((card) => (
-                <BasicCard
-                  key={card.id}
-                  title={card.title}
-                  description={card.description}
-                  onClick={() => handleCardClick(card)} />
-              ))}
-            </div>
-          </div>
-          <div className="column">
-            <h2>Desenvolvimento</h2>
-            <div className="sub-column">
-              {demandCards.filter(card => card.column === 'Desenvolvimento').map((card) => (
-                <BasicCard
-                  key={card.id}
-                  title={card.title}
-                  description={card.description}
-                  onClick={() => handleCardClick(card)} />
-              ))}
-            </div>
-          </div>
-          <div className="column">
-            <h2>Testes</h2>
-            <div className="sub-column">
-              {demandCards.filter(card => card.column === 'Testes').map((card) => (
-                <BasicCard
-                  key={card.id}
-                  title={card.title}
-                  description={card.description}
-                  onClick={() => handleCardClick(card)} />
-              ))}
-            </div>
-          </div>
-          <div className="column">
-            <h2>Produção</h2>
-            <div className="sub-column">
-              {demandCards.filter(card => card.column === 'Produção').map((card) => (
-                <BasicCard
-                  key={card.id}
-                  title={card.title}
-                  description={card.description}
-                  onClick={() => handleCardClick(card)} />
-              ))}
-            </div>
-          </div>
-          <div className="column">
-            <h2>Arquivado</h2>
-            <div className="sub-column">
-              {demandCards.filter(card => card.column === 'Arquivado').map((card) => (
-                <BasicCard
-                  key={card.id}
-                  title={card.title}
-                  description={card.description}
-                  onClick={() => handleCardClick(card)} />
-              ))}
-            </div>
-          </div>
+          <KanbanColumn title="Solicitados" columnKey="Solicitados" demandCards={demandCards} onCardClick={handleCardClick} />
+          <KanbanColumn title="Backlog" columnKey="Backlog" demandCards={demandCards} onCardClick={handleCardClick} />
+          <KanbanColumn title="Desenvolvimento" columnKey="Desenvolvimento" demandCards={demandCards} onCardClick={handleCardClick} />
+          <KanbanColumn title="Testes" columnKey="Testes" demandCards={demandCards} onCardClick={handleCardClick} />
+          <KanbanColumn title="Produção" columnKey="Produção" demandCards={demandCards} onCardClick={handleCardClick} />
+          <KanbanColumn title="Arquivado" columnKey="Arquivado" demandCards={demandCards} onCardClick={handleCardClick} />
         </div>
+      </div>
+      {/* <CadastroDemanda onDemandAdded={handleDemandAdded} /> */}
+    </div >
+  );
+}
+
+const KanbanColumn = ({ title, columnKey, demandCards, onCardClick }) => {
+  const filteredCards = demandCards.filter(card => card.coluna === columnKey);
+
+  return (
+    <div className="column">
+      <h2>{title}</h2>
+      <div className="sub-column">
+        {filteredCards.map((card) => (
+          <BasicCard
+            key={card.id}
+            title={card.tipo}
+            description={card.descricao}
+            onClick={() => onCardClick(card)} />
+        ))}
       </div>
     </div>
   );
 }
 
-export default KanbanBoard
+export default KanbanBoard;

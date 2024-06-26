@@ -66,7 +66,7 @@ const ModalDelete = ({ show, onConfirm, onCancel }) => {
       {show && (
         <ModalBackground>
           <ModalContent>
-            <h2>Tem certeza que deseja deletar este setor?</h2>
+            <h2>Tem certeza que deseja deletar?</h2>
             <ButtonContainer>
               <DeleteButton onClick={handleConfirm}>Confirmar</DeleteButton>
               <CancelButton onClick={onCancel}>Cancelar</CancelButton>
