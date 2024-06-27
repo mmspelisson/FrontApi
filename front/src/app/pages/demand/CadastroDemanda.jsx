@@ -6,10 +6,10 @@ import {
     HeaderSpacer, SubHeaderWrapper, FormWrapper, FormContainer, LabelContainer, LabelText,
     StyledInput, StyledSelect, ButtonContainer, SubmitButton, ClearButton, ErrorMessageStyled, StyledTextarea
 } from './Styles';
+import Api from '../../shared/api';
 import ModalCadastroDemanda from '../../shared/components/modal/ModalCadastroDem';
 
-
-function CadastroDemanda({ onDemandAdded = () => {} }) {
+function CadastroDemanda({ onDemandAdded = () => { } }) {
     const [id, setId] = useState('');
     const [solicitante, setSolicitante] = useState('');
     const [showModal, setShowModal] = useState(false);
@@ -39,23 +39,27 @@ function CadastroDemanda({ onDemandAdded = () => {} }) {
             coluna: "Solicitados"
         };
 
-        axios.post('http://localhost:3001/demanda', novaDemanda)
-            .then((response) => {
-                if (response.status === 200) {
-                    console.log('Demanda cadastrada com sucesso!');
-                    resetForm();
-                    onDemandAdded(novaDemanda);
-                    setShowModal(true);
-                    // Adicione a nova demanda localmente, se necessário
-                    // addDemand(response.data); 
-                } else {
-                    console.error('Erro ao cadastrar demanda:', response.data);
-                }
-            })
-            .catch((error) => {
-                console.error('Erro ao cadastrar demanda:', error);
-            });
+        // Cadastrar no Kanbanize e no banco de dados local em paralelo
+        Promise.all([
+            axios.post('http://localhost/enviar.php', novaDemanda),
+            axios.post('http://localhost:3001/demanda', novaDemanda)
+        ])
+        .then(([kanbanizeResponse, localResponse]) => {
+            // Verifica se ambas as operações foram bem-sucedidas
+            if (kanbanizeResponse.status === 200 && localResponse.status === 200) {
+                console.log('Demanda cadastrada com sucesso!');
+                resetForm();
+                onDemandAdded(novaDemanda);
+                setShowModal(true);
+            } else {
+                console.error('Erro ao cadastrar demanda:', kanbanizeResponse.data, localResponse.data);
+            }
+        })
+        .catch((error) => {
+            console.error('Erro ao cadastrar demanda:', error);
+        });
     };
+
 
     return (
         <>

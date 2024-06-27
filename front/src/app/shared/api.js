@@ -5,57 +5,43 @@ export default class Api {
     board_id = 2
     apikey = 'fRhAgRxaX5Jib9zb4p29GKD4tomTrx6wdPTPo0iZ'
 
-    // obter cartões
+    // carregar a board
     static async getCards() {
         const data = null
-        // let data = cards;
 
-       axios.get('https://ourplanv9.kanbanize.com/api/v2/cards?board_ids=2', {
-            method: 'get',
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "http://ourplanv9.kanbanize.com",
-                "Access-Controll-Allow-Methods": "http://ourplanv9.kanbanize.com'",
-                "Access-Control-Allow-Headers": "http://ourplanv9.kanbanize.com'",
-                mode: 'cors',
-                accept: 'application/json',
-                apikey: 'fRhAgRxaX5Jib9zb4p29GKD4tomTrx6wdPTPo0iZ'
-            }
-        })  
+        axios.get('http://localhost/php.php')
             .then((response) => {
-                data = response
-                console.log(JSON.stringify(response.data));
+                const data = response.data; // Pegue os dados da resposta
+                console.log(JSON.stringify(data)); // Logar os dados em formato JSON
             })
             .catch((error) => {
-                console.log(error);
+                console.log(error); // Logar qualquer erro que ocorrer
             });
-        }
+    }
 
-    // p/ criar um cartão novo
+    // criar um card novo - Não esquecer de passar parâmetros de dados
     static async createCard(cardData) {
         let data = null;
         let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
         myHeaders.append("accept", " application/json");
         myHeaders.append("apikey", "fRhAgRxaX5Jib9zb4p29GKD4tomTrx6wdPTPo0iZ");
 
         let requestOptions = {
             mode: 'cors',
-            method: 'GET',
+            method: 'POST',
             headers: myHeaders,
+            body: JSON.stringify(cardData),
             redirect: 'follow'
         };
 
-        fetch("https://ourplanv9.kanbanize.com/api/v2/cards", requestOptions)
-            .then(response => response.json())
-            .then(result => data = result)
-            .catch(error => console.error('error', error));
+        try {
+            const response = await fetch('http://localhost/enviar.php', requestOptions);
+            const result = await response.json();
+            data = result;
+        } catch (error) {
+            console.error('Erro', error);
+        }
         return data;
     }
 }
-
-// criar cardd com as especificações do título -- DEFINIR AS ESPECIFICAÇÕES
-const newCardData = {
-    "title": "Novo Cartão",
-    "description": "Descrição do cartão",
-};
-
