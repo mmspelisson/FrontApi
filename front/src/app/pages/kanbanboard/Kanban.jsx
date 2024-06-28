@@ -9,13 +9,14 @@ import BasicCard from '../../shared/components/card/Card';
 const UserFilter = ({ userEmail }) => {
   return (
     <div className="user-filter">
-      <div className="UserEmailLabel">Solicitante:</div>
+      <div className="UserEmailLabel"></div>
       <div className="UserEmailContainer">
         <input className="StyledInput" type="text" name="email" value={userEmail} readOnly />
       </div>
     </div>
   );
 }
+
 
 const KanbanBoard = () => {
   const [demandCards, setDemandCards] = useState([]);
@@ -50,7 +51,7 @@ const KanbanBoard = () => {
   }
 
   const handleDemandAdded = (newDemand) => {
-    newDemand.coluna = 'Solicitados';  // Definindo a coluna como "Solicitados" para a nova demanda
+    newDemand.coluna = 'Solicitados';  
     setDemandCards(prevCards => [...prevCards, newDemand]);
     console.log('Nova demanda adicionada:', newDemand);
   }
@@ -79,7 +80,6 @@ const KanbanBoard = () => {
           <KanbanColumn title="Arquivado" columnKey="Arquivado" demandCards={demandCards} onCardClick={handleCardClick} />
         </div>
       </div>
-      {/* <CadastroDemanda onDemandAdded={handleDemandAdded} /> */}
     </div >
   );
 }

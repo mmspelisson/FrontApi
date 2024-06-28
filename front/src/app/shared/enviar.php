@@ -9,6 +9,7 @@ $data = json_decode(file_get_contents('php://input'), true);
 
 $cardData = array(
     "column_id" => 17,
+    "title" => isset($data['tipo']) ? $data['tipo'] : '',
     "description" => isset($data['descricao']) ? $data['descricao'] : '',
     "lane_id" => 4 
 );

@@ -1,7 +1,7 @@
 <?php
 // URL da API
 header("Access-Control-Allow-Origin: http://localhost:3000");
-$url = "https://ourplanv9.kanbanize.com/api/v2/cards?board_ids=2&column_ids=17,18,19,20,21&lane_ids=4";
+$url = "https://ourplanv9.kanbanize.com/api/v2/cards?board_ids=2&column_ids=17,18,19,20,21,12&lane_ids=4";
 // API Key
 $apiKey = "fRhAgRxaX5Jib9zb4p29GKD4tomTrx6wdPTPo0iZ";
 
