@@ -21,6 +21,7 @@ const UserFilter = ({ userEmail }) => {
 const KanbanBoard = () => {
   const [demandCards, setDemandCards] = useState([]);
   const [userEmail, setUserEmail] = useState("");
+  const [carregando, setCarregando] = useState(true)
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -36,11 +37,12 @@ const KanbanBoard = () => {
 
   const fetchDemandCards = () => {
     Api.getCards()
-      .then((cards) => {
-        console.log({cards})
-        setDemandCards(cards || []);
+      .then((kanbanizeCards) => {
+        setDemandCards(kanbanizeCards.data.data.data)
+        // fillKanban(kanbanizeCards.data.data.data)
       })
-      .catch((error) => console.error(error));
+      .catch((error) => console.error(error))
+      .finally(() => setCarregando(false))
   }
 
   const handleCardClick = (card) => {
@@ -51,7 +53,7 @@ const KanbanBoard = () => {
   }
 
   const handleDemandAdded = (newDemand) => {
-    newDemand.coluna = 'Solicitados';  
+    newDemand.coluna = 'Solicitados';
     setDemandCards(prevCards => [...prevCards, newDemand]);
     console.log('Nova demanda adicionada:', newDemand);
   }
@@ -71,31 +73,35 @@ const KanbanBoard = () => {
       <div className="kanban-container">
         <UserFilter userEmail={userEmail} />
         <Sidebar />
-        <div className="kanban-board">
-          <KanbanColumn title="Solicitados" columnKey="Solicitados" demandCards={demandCards} onCardClick={handleCardClick} />
-          <KanbanColumn title="Backlog" columnKey="Backlog" demandCards={demandCards} onCardClick={handleCardClick} />
-          <KanbanColumn title="Desenvolvimento" columnKey="Desenvolvimento" demandCards={demandCards} onCardClick={handleCardClick} />
-          <KanbanColumn title="Testes" columnKey="Testes" demandCards={demandCards} onCardClick={handleCardClick} />
-          <KanbanColumn title="Produção" columnKey="Produção" demandCards={demandCards} onCardClick={handleCardClick} />
-          <KanbanColumn title="Arquivado" columnKey="Arquivado" demandCards={demandCards} onCardClick={handleCardClick} />
-        </div>
+        {
+          carregando
+            ? <p>carregando</p>
+            : <div className="kanban-board">
+                <KanbanColumn title="Solicitados" columnKey={17} demandCards={demandCards} onCardClick={handleCardClick} />
+                <KanbanColumn title="Backlog" columnKey="Backlog" demandCards={demandCards} onCardClick={handleCardClick} />
+                <KanbanColumn title="Desenvolvimento" columnKey= {18} demandCards={demandCards} onCardClick={handleCardClick} />
+                <KanbanColumn title="Testes" columnKey= {19} demandCards={demandCards} onCardClick={handleCardClick} />
+                <KanbanColumn title="Produção" columnKey={20} demandCards={demandCards} onCardClick={handleCardClick} />
+                <KanbanColumn title="Arquivado" columnKey={21} demandCards={demandCards} onCardClick={handleCardClick} />
+              </div>
+        }
       </div>
     </div >
   );
 }
 
 const KanbanColumn = ({ title, columnKey, demandCards, onCardClick }) => {
-  const filteredCards = demandCards.filter(card => card.coluna === columnKey);
-
+  const filteredCards = demandCards.filter(card => card.column_id === columnKey);
+  
   return (
     <div className="column">
       <h2>{title}</h2>
       <div className="sub-column">
         {filteredCards.map((card) => (
           <BasicCard
-            key={card.id}
-            title={card.tipo}
-            description={card.descricao}
+            key={card.card_id}
+            title={card.title}
+            description={card.title}
             onClick={() => onCardClick(card)} />
         ))}
       </div>
