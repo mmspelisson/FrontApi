@@ -5,6 +5,7 @@ import './Styles.css';
 import Api from '../../shared/api';
 import { HeaderSpacer } from '../registerUsers/Styles';
 import BasicCard from '../../shared/components/card/Card';
+import CardModal from '../../shared/components/modal/ModalCard';
 
 const UserFilter = ({ userEmail }) => {
   return (
@@ -17,11 +18,11 @@ const UserFilter = ({ userEmail }) => {
   );
 }
 
-
 const KanbanBoard = () => {
   const [demandCards, setDemandCards] = useState([]);
   const [userEmail, setUserEmail] = useState("");
-  const [carregando, setCarregando] = useState(true)
+  const [carregando, setCarregando] = useState(true);
+  const [selectedCardTitle, setSelectedCardTitle] = useState(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -38,24 +39,18 @@ const KanbanBoard = () => {
   const fetchDemandCards = () => {
     Api.getCards()
       .then((kanbanizeCards) => {
-        setDemandCards(kanbanizeCards.data.data.data)
-        // fillKanban(kanbanizeCards.data.data.data)
+        setDemandCards(kanbanizeCards.data.data.data);
       })
       .catch((error) => console.error(error))
-      .finally(() => setCarregando(false))
+      .finally(() => setCarregando(false));
   }
 
   const handleCardClick = (card) => {
+    setSelectedCardTitle(card.title);
   }
 
   const handleRefresh = () => {
     fetchDemandCards();
-  }
-
-  const handleDemandAdded = (newDemand) => {
-    newDemand.coluna = 'Solicitados';
-    setDemandCards(prevCards => [...prevCards, newDemand]);
-    console.log('Nova demanda adicionada:', newDemand);
   }
 
   return (
@@ -66,8 +61,10 @@ const KanbanBoard = () => {
         <div className="subheader-content">
           <span>Controle de Demandas</span>
         </div>
-        <div className="refresh-button-container">
-          <button onClick={handleRefresh} className="refresh-button">⟲</button>
+        <div className="refresh-button-wrapper">
+          <div className="refresh-button-container">
+            <button onClick={handleRefresh} className="refresh-button">⟲</button>
+          </div>
         </div>
       </div>
       <div className="kanban-container">
@@ -77,22 +74,23 @@ const KanbanBoard = () => {
           carregando
             ? <p>carregando</p>
             : <div className="kanban-board">
-                <KanbanColumn title="Solicitados" columnKey={17} demandCards={demandCards} onCardClick={handleCardClick} />
-                <KanbanColumn title="Backlog" columnKey="Backlog" demandCards={demandCards} onCardClick={handleCardClick} />
-                <KanbanColumn title="Desenvolvimento" columnKey= {18} demandCards={demandCards} onCardClick={handleCardClick} />
-                <KanbanColumn title="Testes" columnKey= {19} demandCards={demandCards} onCardClick={handleCardClick} />
-                <KanbanColumn title="Produção" columnKey={20} demandCards={demandCards} onCardClick={handleCardClick} />
-                <KanbanColumn title="Arquivado" columnKey={21} demandCards={demandCards} onCardClick={handleCardClick} />
-              </div>
+              <KanbanColumn title="Solicitados" columnKey={17} demandCards={demandCards} onCardClick={handleCardClick} />
+              <KanbanColumn title="Backlog" columnKey={31} demandCards={demandCards} onCardClick={handleCardClick} />
+              <KanbanColumn title="Desenvolvimento" columnKey={18} demandCards={demandCards} onCardClick={handleCardClick} />
+              <KanbanColumn title="Testes" columnKey={19} demandCards={demandCards} onCardClick={handleCardClick} />
+              <KanbanColumn title="Produção" columnKey={20} demandCards={demandCards} onCardClick={handleCardClick} />
+              <KanbanColumn title="Arquivado" columnKey={21} demandCards={demandCards} onCardClick={handleCardClick} />
+            </div>
         }
       </div>
+      <CardModal isOpen={selectedCardTitle !== null} onRequestClose={() => setSelectedCardTitle(null)} title={selectedCardTitle} />
     </div >
   );
 }
 
 const KanbanColumn = ({ title, columnKey, demandCards, onCardClick }) => {
   const filteredCards = demandCards.filter(card => card.column_id === columnKey);
-  
+
   return (
     <div className="column">
       <h2>{title}</h2>
@@ -101,7 +99,7 @@ const KanbanColumn = ({ title, columnKey, demandCards, onCardClick }) => {
           <BasicCard
             key={card.card_id}
             title={card.title}
-            description={card.title}
+            description={card.description}
             onClick={() => onCardClick(card)} />
         ))}
       </div>

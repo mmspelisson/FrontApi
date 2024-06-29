@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import styled from 'styled-components'
+import React, { useEffect } from 'react';
+import styled from 'styled-components';
 
 const ModalBackground = styled.div`
   position: fixed;
@@ -30,4 +30,4 @@ const ModalCadastroUsuario = ({ show, onClose }) => {
   );
 };
 
-export default ModalCadastroUsuario
+export default ModalCadastroUsuario;
