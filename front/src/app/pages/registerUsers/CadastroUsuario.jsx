@@ -15,7 +15,6 @@ function CadastroUsuario() {
   const [editingUser, setEditingUser] = useState(null); 
   const [showUpdateSuccessModal, setShowUpdateSuccessModal] = useState(false);
 
-
   useEffect(() => {
     Promise.all([
       axios.get('http://localhost:3001/setor'),
@@ -163,6 +162,7 @@ function CadastroUsuario() {
           </Form>
         )}
       </Formik>
+      {showModal && <ModalCadastroUsuario show={showModal} onClose={() => setShowModal(false)} />}
       {showUpdateSuccessModal && <ModalAtualizacaoSucesso onClose={() => setShowUpdateSuccessModal(false)} />}
       <CrudSimples refreshGrid={refreshGrid} handleEdit={handleEdit} />
     </>
