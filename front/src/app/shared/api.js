@@ -7,15 +7,9 @@ export default class Api {
 
     // carregar a board
     static async getCards() {
-        const data = null
-
-        axios.get('http://localhost/php.php')
-            .then((response) => {
-                const data = response.data; // Pegue os dados da resposta
-                console.log(JSON.stringify(data)); // Logar os dados em formato JSON
-            })
+        return axios.get('http://localhost/php.php')
             .catch((error) => {
-                console.log(error); // Logar qualquer erro que ocorrer
+                console.log(error);
             });
     }
 
