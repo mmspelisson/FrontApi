@@ -9,17 +9,20 @@ import BasicCard from '../../shared/components/card/Card';
 const UserFilter = ({ userEmail }) => {
   return (
     <div className="user-filter">
-      <div className="UserEmailLabel"></div>
+      <div className="UserEmailLabel">Solicitante: </div>
       <div className="UserEmailContainer">
         <input className="StyledInput" type="text" name="email" value={userEmail} readOnly />
       </div>
     </div>
   );
 }
+
 const KanbanBoard = () => {
   const [demandCards, setDemandCards] = useState([]);
+  const [filteredCards, setFilteredCards] = useState([]);
   const [userEmail, setUserEmail] = useState("");
-  const [carregando, setCarregando] = useState(true)
+  const [carregando, setCarregando] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -33,21 +36,37 @@ const KanbanBoard = () => {
     fetchDemandCards();
   }, []);
 
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setFilteredCards(demandCards);
+    } else {
+      const filtered = demandCards.filter(card =>
+        card.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        card.description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredCards(filtered);
+    }
+  }, [searchTerm, demandCards]);
+
   const fetchDemandCards = () => {
     Api.getCards()
       .then((kanbanizeCards) => {
-        console.log(kanbanizeCards.data.data.data);
-        setDemandCards(kanbanizeCards.data.data.data)
+        setDemandCards(kanbanizeCards.data.data.data);
       })
       .catch((error) => console.error(error))
-      .finally(() => setCarregando(false))
+      .finally(() => setCarregando(false));
   }
 
   const handleCardClick = (card) => {
+    // Implemente a lógica conforme necessário
   }
 
   const handleRefresh = () => {
     fetchDemandCards();
+  }
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
   }
 
   return (
@@ -65,26 +84,35 @@ const KanbanBoard = () => {
       <div className="kanban-container">
         <UserFilter userEmail={userEmail} />
         <Sidebar />
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="Pesquisar solicitante..."
+            value={searchTerm}
+            onChange={handleSearch}
+            className="search-input"
+          />
+        </div>
         {
           carregando
-            ? <p>carregando</p>
+            ? <p>Carregando...</p>
             : <div className="kanban-board">
-                <KanbanColumn title="Solicitados" columnKey={17} demandCards={demandCards} onCardClick={handleCardClick} />
-                <KanbanColumn title="Backlog" columnKey={31} demandCards={demandCards} onCardClick={handleCardClick} />
-                <KanbanColumn title="Desenvolvimento" columnKey= {18} demandCards={demandCards} onCardClick={handleCardClick} />
-                <KanbanColumn title="Testes" columnKey= {19} demandCards={demandCards} onCardClick={handleCardClick} />
-                <KanbanColumn title="Produção" columnKey={20} demandCards={demandCards} onCardClick={handleCardClick} />
-                <KanbanColumn title="Arquivado" columnKey={21} demandCards={demandCards} onCardClick={handleCardClick} />
+                <KanbanColumn title="Solicitados" columnKey={17} demandCards={filteredCards} onCardClick={handleCardClick} />
+                <KanbanColumn title="Backlog" columnKey={31} demandCards={filteredCards} onCardClick={handleCardClick} />
+                <KanbanColumn title="Desenvolvimento" columnKey={18} demandCards={filteredCards} onCardClick={handleCardClick} />
+                <KanbanColumn title="Testes" columnKey={19} demandCards={filteredCards} onCardClick={handleCardClick} />
+                <KanbanColumn title="Produção" columnKey={20} demandCards={filteredCards} onCardClick={handleCardClick} />
+                <KanbanColumn title="Arquivado" columnKey={21} demandCards={filteredCards} onCardClick={handleCardClick} />
               </div>
         }
       </div>
-    </div >
+    </div>
   );
 }
 
 const KanbanColumn = ({ title, columnKey, demandCards, onCardClick }) => {
   const filteredCards = demandCards.filter(card => card.column_id === columnKey);
-  
+
   return (
     <div className="column">
       <h2>{title}</h2>
@@ -94,7 +122,8 @@ const KanbanColumn = ({ title, columnKey, demandCards, onCardClick }) => {
             key={card.card_id}
             title={card.title}
             description={card.description}
-            onClick={() => onCardClick(card)} />
+            onClick={() => onCardClick(card)}
+          />
         ))}
       </div>
     </div>
