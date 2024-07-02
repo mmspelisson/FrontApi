@@ -57,7 +57,6 @@ function CadastroDemanda({ onDemandAdded = () => { } }) {
         });
     };
 
-
     return (
         <>
             <HeaderSpacer />

@@ -91,11 +91,11 @@ function CadastroUsuario() {
         validationSchema={yup.object().shape({
           email: yup.string().required('Email é obrigatório').email('Email inválido'),
           senha: yup.string().required('Senha é obrigatória'),
-          nomeCompleto: yup.string().required('Nome é obrigatório'),
+          nomeCompleto: yup.string().matches(/^[a-zA-ZÀ-ÿ\s]*$/, 'Nome completo não deve conter números').required('Nome é obrigatório'),
           setor: yup.string().required('Setor é obrigatório'),
           liberacoes: yup.string().required('A liberação é obrigatória'),
-          contato: yup.string().required('Contato é obrigatório'),
-          cidadeUF: yup.string().required('Cidade/UF é obrigatória'),
+          contato: yup.string().matches(/^\d{11}$/, 'Contato deve ter exatamente 11 dígitos numéricos').required('Contato é obrigatório'),
+          cidadeUF: yup.string().matches(/^[^\d]+$/, 'Cidade/UF não deve conter números').required('Cidade/UF é obrigatória'),
         })}
       >
         {({ resetForm, setValues }) => (

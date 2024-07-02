@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import CardModal from '../modal/ModalCard';
 
-export default function BasicCard({ title, description }) {
+const BasicCard = ({ title, description }) => {
   const [modalOpen, setModalOpen] = React.useState(false);
 
   const handleVerMais = () => {
@@ -46,17 +46,31 @@ export default function BasicCard({ title, description }) {
           {title}
         </Typography>
       </div>
-      <CardContent>
+      <CardContent
+        sx={{
+          padding: '10px', // Padding ajustado para melhor visualização
+          textAlign: 'center',
+          maxHeight: '5em', // Ajuste para caber até três linhas de texto
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          display: '-webkit-box',
+          WebkitLineClamp: 3,
+          WebkitBoxOrient: 'vertical'
+        }}
+      >
         <Typography
           variant="body1"
-          sx={{ lineHeight: 1.5, color: 'text.secondary', textAlign: 'center' }}
+          sx={{ lineHeight: 1.5, color: 'text.secondary' }}
         >
-          <div style={{ maxHeight: '150px', overflowY: 'auto' }}>
-            {description}
-          </div>
+          {description}
         </Typography>
       </CardContent>
-      <CardActions style={{ justifyContent: 'center' }}>
+      <CardActions
+        style={{
+          justifyContent: 'center',
+          paddingTop: '10px', // Espaço adicionado acima do botão
+        }}
+      >
         <Button
           size="small"
           variant="contained"
@@ -71,3 +85,5 @@ export default function BasicCard({ title, description }) {
     </Card>
   );
 }
+
+export default BasicCard;

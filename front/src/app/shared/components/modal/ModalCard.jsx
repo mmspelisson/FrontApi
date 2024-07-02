@@ -35,17 +35,17 @@ const CardModal = ({ isOpen, onRequestClose, title, description }) => {
             }}
         >
             <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#151F6D' }}>
+                <Typography variant="h5" sx={{ fontWeight: 'bold', fontSize: '1.5rem', color: '#151F6D' }}>
                     {title}
                 </Typography>
             </div>
 
             <div className="descricao" style={{ textAlign: 'left', marginBottom: '20px' }}>
-                <Typography variant="body1" component="p">
+                <Typography variant="body1" component="p" sx={{ fontSize: '1.2rem' }}>
                     <strong>Descrição:</strong>
                 </Typography>
-                <Typography variant="body2" component="p" sx={{ whiteSpace: 'pre-wrap' }}>
-                    {description}
+                <Typography variant="body2" component="div" sx={{ fontSize: '1.1rem', whiteSpace: 'pre-wrap' }}>
+                    <div dangerouslySetInnerHTML={{ __html: description }} />
                 </Typography>
             </div>
 
