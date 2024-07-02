@@ -6,7 +6,7 @@ const cardStyles = {
       cursor: 'pointer',
       marginBottom: '8px',
       maxWidth: '300px',
-      minHeight: '20px',
+      maxHeight: '100px',
       padding: '8px',
       position: 'relative',
       textDecoration: 'none',

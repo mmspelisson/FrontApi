@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-const CardModal = ({ isOpen, onRequestClose, title }) => {
+const CardModal = ({ isOpen, onRequestClose, title, description }) => {
     if (!isOpen) return null;
 
     return (
@@ -26,10 +26,10 @@ const CardModal = ({ isOpen, onRequestClose, title }) => {
                     borderRadius: '8px',
                     boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
                     padding: '20px',
-                    maxWidth: '70%', 
-                    width: 'auto', 
-                    maxHeight: '90%', 
-                    overflowY: 'auto', 
+                    maxWidth: '70%',
+                    width: 'auto',
+                    maxHeight: '90%',
+                    overflowY: 'auto',
                     border: 'none',
                 },
             }}
@@ -40,8 +40,13 @@ const CardModal = ({ isOpen, onRequestClose, title }) => {
                 </Typography>
             </div>
 
-            <div className="descricao">
-                <p><strong>Descrição:</strong></p>
+            <div className="descricao" style={{ textAlign: 'left', marginBottom: '20px' }}>
+                <Typography variant="body1" component="p">
+                    <strong>Descrição:</strong>
+                </Typography>
+                <Typography variant="body2" component="p" sx={{ whiteSpace: 'pre-wrap' }}>
+                    {description}
+                </Typography>
             </div>
 
             <Button

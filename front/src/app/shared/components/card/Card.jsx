@@ -7,17 +7,17 @@ import Typography from '@mui/material/Typography';
 import CardModal from '../modal/ModalCard';
 
 export default function BasicCard({ title, description }) {
-  const [modalOpen, setModalOpen] = React.useState(false); 
+  const [modalOpen, setModalOpen] = React.useState(false);
 
   const handleVerMais = () => {
-    setModalOpen(true); 
+    setModalOpen(true);
   };
 
   return (
-    <Card 
+    <Card
       sx={{
         minWidth: 100,
-        maxWidth: 250, 
+        maxWidth: 250,
         boxShadow: 5,
         borderRadius: 2,
         padding: 2,
@@ -29,37 +29,37 @@ export default function BasicCard({ title, description }) {
         }
       }}
     >
-      <CardContent>
-        <Typography 
-          sx={{ fontSize: 12, color: 'text.secondary' }} 
-          gutterBottom
-        >
-          Título
-        </Typography>
-        <Typography 
-          variant="h5" 
-          component="div" 
-          sx={{ fontWeight: 'bold', marginBottom: 1, color: '#151F6D' }}
+      <div
+        style={{
+          backgroundColor: '#f1f1f1',
+          borderRadius: '8px 8px 0 0',
+          padding: '10px',
+          textAlign: 'center',
+          boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)'
+        }}
+      >
+        <Typography
+          variant="h5"
+          component="div"
+          sx={{ fontWeight: 'bold', color: '#151F6D' }}
         >
           {title}
         </Typography>
-        <Typography 
-          variant="subtitle1" 
-          sx={{ mb: 1.5, color: 'text.secondary' }}
-        >
-          Descrição
-        </Typography>
-        <Typography 
+      </div>
+      <CardContent>
+        <Typography
           variant="body1"
-          sx={{ lineHeight: 1.5 }}
+          sx={{ lineHeight: 1.5, color: 'text.secondary', textAlign: 'center' }}
         >
-          {description}
+          <div style={{ maxHeight: '150px', overflowY: 'auto' }}>
+            {description}
+          </div>
         </Typography>
       </CardContent>
-      <CardActions>
-        <Button 
-          size="small" 
-          variant="contained" 
+      <CardActions style={{ justifyContent: 'center' }}>
+        <Button
+          size="small"
+          variant="contained"
           color="primary"
           sx={{ textTransform: 'none' }}
           onClick={handleVerMais}
