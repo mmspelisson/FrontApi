@@ -1,16 +1,21 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
+
 $url = "https://ourplanv9.kanbanize.com/api/v2/cards";
 $apiKey = "fRhAgRxaX5Jib9zb4p29GKD4tomTrx6wdPTPo0iZ";
 
 // Recebendo os dados do corpo da requisição
 $data = json_decode(file_get_contents('php://input'), true);
 
+$description = "Solicitante: " . (isset($data['solicitante']) ? $data['solicitante'] : 'Não definido') . "\n";
+$description .= "Prioridade: " . (isset($data['prioridade']) ? $data['prioridade'] : 'Não definido') . "\n";
+$description .= "Descrição: " . (isset($data['descricao']) ? $data['descricao'] : 'Não definido') . "\n";
+
 $cardData = array(
     "column_id" => 17,
-    "title" => isset($data['tipo']) ? $data['tipo'] : '',
-    "description" => isset($data['descricao']) ? $data['descricao'] : '',
+    "title" => isset($data['tipo']) ? $data['tipo'] : 'Não definido',
+    "description" => $description,
     "lane_id" => 4 
 );
 
